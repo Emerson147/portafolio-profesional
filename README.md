@@ -1,59 +1,128 @@
-# PortafolioAngular
+# Portafolio Angular - Zen Minimalist Edition 🌿
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.
+[![Angular](https://img.shields.io/badge/Angular-21.0.0-DD0031.svg?style=flat&logo=angular)](https://angular.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC.svg?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## Development server
+> **"Simplicity is the ultimate sophistication."**
 
-To start a local development server, run:
+This is a modern, high-performance portfolio application built with **Angular 21** and **Tailwind CSS 4**. It embodies a "Zen Minimalist" design philosophy, focusing on clean lines, meaningful whitespace, and a distraction-free user experience.
+
+The codebase is structured following **Atomic Design** principles, ensuring modularity, scalability, and maintainability.
+
+---
+
+## ✨ Features
+
+- **🚀 Modern Stack**: Built on the bleeding edge with **Angular 21** and **Tailwind CSS 4**.
+- **🧩 Atomic Design Architecture**: Components organized into Atoms, Molecules, and Organisms for true reusability.
+- **🧘 Zen Aesthetics**: Custom "Zen" styling with subtle grid backgrounds (`.zen-grid-bg`), smooth animations, and a focus on content.
+- **📱 Fully Responsive**: Adaptable layouts that look great on any device.
+- **⚡ High Performance**: Optimized build with tree-shaking and lazy loading.
+
+---
+
+## 🏗️ Project Structure
+
+The project follows a strict directory structure to maintain order and scalability:
+
+```
+src/app/
+├── core/           # Core services, guards, and singleton providers
+├── layouts/        # Main layout definitions
+├── pages/          # Route-level components (Views)
+│   └── home/       # Landing page
+├── shared/         # Reusable code
+│   ├── atoms/      # Basic building blocks (Buttons, Inputs, Icons)
+│   ├── molecules/  # Simple combinations (Nav items, Cards)
+│   └── organisms/  # Complex sections (Hero, Footer, Navbar)
+└── app.routes.ts   # Application routing configuration
+```
+
+## 🎨 Design System
+
+The application uses a custom design system tokenized via Tailwind CSS.
+
+- **Typography**: Clean sans-serif fonts optimized for readability.
+- **Colors**: A minimal palette with semantic intent.
+- **Animations**: Purposeful micro-interactions (fade-ins, slide-downs, hover states).
+- **Grid**: A subtle background grid (`.zen-grid-bg`) adds depth without clutter.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js**: v18.13.0 or higher.
+- **npm**: v9.0.0 or higher.
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/your-username/portafolio-angular.git
+    cd portafolio-angular
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+### Development Server
+
+Run the development server and open functionality in your browser:
 
 ```bash
+npm start
+# or
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+### Build
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Build the project for production:
 
 ```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+npm run build
+# or
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 🧪 Testing
+
+### Unit Tests
+
+Execute unit tests via [Vitest](https://vitest.dev/):
 
 ```bash
+npm test
+# or
 ng test
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🤝 Contributing
 
-```bash
-ng e2e
-```
+Contributions are welcome! If you have suggestions for improvements or bug fixes, feel free to open an issue or submit a pull request.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
