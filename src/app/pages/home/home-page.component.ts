@@ -10,6 +10,7 @@ import { ProjectsSectionComponent } from '../../shared/organisms/projects-sectio
 import { ProcessSectionComponent } from '../../shared/organisms/process-section/process-section.component';
 import { ServicesSectionComponent } from '../../shared/organisms/services-section/services-section.component';
 import { TestimonialsSectionComponent } from '../../shared/organisms/testimonials-section/testimonials-section.component';
+import { ContactSectionComponent } from '../../shared/organisms/contact-section/contact-section.component';
 import { FooterComponent } from '../../shared/organisms/footer/footer.component';
 import { GsapService } from '../../core/services/gsap.service';
 
@@ -28,6 +29,8 @@ import { GsapService } from '../../core/services/gsap.service';
     TestimonialsSectionComponent,
     StackSectionComponent,
     ProjectsSectionComponent,
+    TestimonialsSectionComponent,
+    ContactSectionComponent,
     FooterComponent,
   ],
   template: `
@@ -44,6 +47,7 @@ import { GsapService } from '../../core/services/gsap.service';
       <app-services-section />
       <app-projects-section />
       <app-testimonials-section />
+      <app-contact-section />
       <app-footer />
     </app-main-layout>
   `,

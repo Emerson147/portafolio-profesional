@@ -8,32 +8,18 @@ import {
   TECH_ICONS,
 } from '../../../core/data/icons.data';
 import { GsapService } from '../../../core/services/gsap.service';
-
-interface Project {
-  title: string;
-  type: ProjectVisualType;
-  desc: string;
-  tags: string[];
-  github?: string;
-  demo?: string;
-  role: string;
-  date: string;
-  duration?: string;
-  status: 'Completado' | 'En Progreso' | 'Mantenimiento';
-  metrics?: {
-    users?: string;
-    uptime?: string;
-    performance?: string;
-  };
-  image?: string;
-}
+import { PROJECTS, Project } from '../../../core/data/projects.data';
+import { ProjectDetailModalComponent } from '../project-detail-modal/project-detail-modal.component';
 
 @Component({
   selector: 'app-projects-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ProjectDetailModalComponent],
   template: `
-    <section id="projects" class="py-24 md:py-32 px-6 bg-stone-100 relative overflow-hidden">
+    <section
+      id="projects"
+      class="py-24 md:py-32 px-6 bg-stone-100 dark:bg-stone-900 relative overflow-hidden transition-colors duration-500"
+    >
       <!-- Zen Pattern Background -->
       <div
         class="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -235,12 +221,46 @@ interface Project {
                     </div>
                   }
                 </div>
+                <!-- Ver Detalle Link -->
+                @if (project.slug) {
+                  <div
+                    class="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    <button
+                      (click)="openModal(project); $event.stopPropagation()"
+                      class="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 hover:text-emerald-300 transition-colors"
+                    >
+                      VER DETALLE
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M14 5l7 7m0 0l-7 7m7-7H3"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                }
               </div>
             </div>
           }
         </div>
       </div>
     </section>
+
+    <!-- Project Detail Modal -->
+    <app-project-detail-modal
+      [project]="selectedProject()"
+      [visible]="modalVisible()"
+      (close)="closeModal()"
+    />
   `,
   styles: [
     `
@@ -257,59 +277,22 @@ export class ProjectsSectionComponent implements AfterViewInit {
 
   // Filtering state
   activeFilter = signal<string>('all');
+  // Modal state
+  selectedProject = signal<Project | null>(null);
+  modalVisible = signal<boolean>(false);
 
-  projects: Project[] = [
-    {
-      title: 'Sistema de Gestión Académica',
-      type: 'PLATFORM',
-      desc: 'Plataforma integral para gestión de notas y matrículas. Backend robusto en Spring Boot con seguridad JWT y Frontend en Angular con PrimeNG.',
-      tags: ['Spring Boot', 'Angular', 'PrimeNG', 'PostgreSQL'],
-      github: 'https://github.com/tuusuario/gestion-academica',
-      demo: 'https://demo-academica.vercel.app',
-      role: 'Full Stack Developer',
-      date: '2024',
-      duration: '4 meses',
-      status: 'Completado',
-      metrics: {
-        users: '500+',
-        uptime: '99.9%',
-        performance: '<150ms',
-      },
-      image: 'https://via.placeholder.com/800x600/10b981/ffffff?text=Sistema+Academico',
-    },
-    {
-      title: 'E-Commerce Microservicios',
-      type: 'MICROSERVICES',
-      desc: 'Arquitectura basada en Docker con servicios independientes para catálogo, carrito y pagos. Comunicación asíncrona con RabbitMQ.',
-      tags: ['Java', 'Docker', 'Microservices', 'RabbitMQ'],
-      github: 'https://github.com/tuusuario/ecommerce-micro',
-      role: 'Backend Developer',
-      date: '2023',
-      duration: '3 meses',
-      status: 'En Progreso',
-      metrics: {
-        users: '1000+',
-        performance: '<200ms',
-      },
-      image: 'https://via.placeholder.com/800x600/14b8a6/ffffff?text=E-Commerce',
-    },
-    {
-      title: 'Dashboard Administrativo Zen',
-      type: 'DASHBOARD',
-      desc: 'Panel de control minimalista utilizando Sakai NG y Tailwind para visualización de datos en tiempo real.',
-      tags: ['Sakai NG', 'Chart.js', 'Tailwind', 'Responsive'],
-      demo: 'https://dashboard-zen.vercel.app',
-      role: 'Frontend Developer',
-      date: '2024',
-      duration: '2 meses',
-      status: 'Mantenimiento',
-      metrics: {
-        uptime: '100%',
-        performance: '<100ms',
-      },
-      image: 'https://via.placeholder.com/800x600/059669/ffffff?text=Dashboard+Zen',
-    },
-  ];
+  openModal(project: Project) {
+    this.selectedProject.set(project);
+    // Small delay so the element is in DOM before animating
+    setTimeout(() => this.modalVisible.set(true), 10);
+  }
+
+  closeModal() {
+    this.modalVisible.set(false);
+    setTimeout(() => this.selectedProject.set(null), 500);
+  }
+
+  projects: Project[] = PROJECTS;
 
   // Computed: filtered projects
   filteredProjects = computed(() => {

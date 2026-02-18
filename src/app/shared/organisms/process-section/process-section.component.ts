@@ -6,7 +6,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="py-24 relative overflow-hidden" id="process">
+    <section
+      class="py-24 relative overflow-hidden bg-white dark:bg-stone-950 transition-colors duration-500"
+      id="process"
+    >
       <!-- Background Grid -->
       <div class="absolute inset-0 zen-grid-bg opacity-30 pointer-events-none"></div>
 

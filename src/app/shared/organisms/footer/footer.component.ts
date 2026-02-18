@@ -2,13 +2,17 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONS } from '../../../core/data/icons.data';
+import { TranslateService } from '../../../core/services/translate.service';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <footer id="contact" class="bg-stone-900 text-white py-24 px-6 relative overflow-hidden">
+    <footer
+      id="contact"
+      class="bg-stone-900 dark:bg-stone-950 text-white pb-24 pt-12 px-6 relative overflow-hidden transition-colors duration-500"
+    >
       <!-- Blueprint Grid Pattern - Minimalist -->
       <div
         class="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -17,11 +21,12 @@ import { ICONS } from '../../../core/data/icons.data';
 
       <div class="max-w-5xl mx-auto text-center relative z-10">
         <h2 class="text-5xl md:text-7xl font-bold mb-8 tracking-tighter gs-reveal">
-          Vamos a crear algo <br /><span class="text-emerald-500">sólido.</span>
+          {{ i18n.t().footer.headline1 }} <br /><span class="text-emerald-500">{{
+            i18n.t().footer.headline2
+          }}</span>
         </h2>
         <p class="text-stone-400 text-lg mb-12 max-w-2xl mx-auto gs-reveal">
-          ¿Buscas un desarrollador que entienda tanto la lógica del backend como la experiencia del
-          frontend? Estoy listo para unirme a tu equipo.
+          {{ i18n.t().footer.subtitle }}
         </p>
 
         <!-- Contact Info - Blueprint Grid -->
@@ -68,27 +73,44 @@ import { ICONS } from '../../../core/data/icons.data';
           </div>
         </div>
 
-        <!-- CTA Buttons -->
         <div class="mb-12 flex flex-wrap justify-center gap-4 gs-reveal">
+          <!-- Ver CV Online -->
           <a
-            href="mailto:emersontec147@gmail.com"
-            class="group inline-flex items-center gap-3 px-8 py-4 border-2 border-emerald-500 text-emerald-400 font-mono text-sm rounded-lg hover:bg-emerald-500 hover:text-stone-900 transition-all duration-300"
+            href="https://minimalist-portfolio-eta.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group inline-flex items-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-sm rounded-lg transition-all duration-300 shadow-lg shadow-emerald-500/20"
           >
-            <span class="w-5 h-5" [innerHTML]="getIcon('mail')"></span>
-            <span>ENVIAR MENSAJE</span>
-            <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+            <span>VER CV ONLINE</span>
           </a>
-
+          <!-- Descargar PDF -->
           <a
             href="assets/cv-migattedev.pdf"
             download
             class="group inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-stone-300 font-mono text-sm rounded-lg hover:border-emerald-500 hover:text-emerald-400 transition-all duration-300"
           >
-            <span>DESCARGAR CV</span>
-            <span
-              class="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300"
-              [innerHTML]="getIcon('arrowUpRight')"
-            ></span>
+            <svg
+              class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <span>DESCARGAR PDF</span>
           </a>
         </div>
 
@@ -108,19 +130,21 @@ import { ICONS } from '../../../core/data/icons.data';
           </div>
 
           <!-- Social Links - Icon Buttons -->
-          <div class="flex gap-4 mt-4 md:mt-0">
+          <div class="flex gap-4 mt-4 md:mt-0" role="list" aria-label="Redes sociales">
             <a
-              href="https://linkedin.com/in/tuusuario"
+              href="https://linkedin.com/in/emerson-quijada-rafael"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center text-stone-400 hover:border-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-300"
+              aria-label="Ver perfil de LinkedIn de Emerson Quijada Rafael (abre en nueva pestaña)"
+              class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center text-stone-400 hover:border-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900"
               [innerHTML]="getIcon('linkedin')"
             ></a>
             <a
-              href="https://github.com/tuusuario"
+              href="https://github.com/Emerson147"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center text-stone-400 hover:border-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-300"
+              aria-label="Ver perfil de GitHub de Emerson147 (abre en nueva pestaña)"
+              class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center text-stone-400 hover:border-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900"
               [innerHTML]="getIcon('github')"
             ></a>
           </div>
@@ -138,6 +162,7 @@ import { ICONS } from '../../../core/data/icons.data';
 })
 export class FooterComponent {
   private sanitizer = inject(DomSanitizer);
+  i18n = inject(TranslateService);
 
   getIcon(iconName: keyof typeof ICONS): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(ICONS[iconName] || '');

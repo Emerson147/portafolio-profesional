@@ -1,6 +1,9 @@
 /* Tailwind CSS v4 */
 @import 'tailwindcss';
 
+/* Enable dark mode via class on <html> */
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: oklch(65% 0.18 150); /* Zen Green */
   --color-secondary: oklch(70% 0.12 180); /* Zen Teal */
@@ -14,6 +17,7 @@
     line-height: 1.1;
   }
 }
+
 html {
   scroll-behavior: smooth;
 }
@@ -33,4 +37,51 @@ body {
     'Open Sans',
     'Helvetica Neue',
     sans-serif;
+}
+
+/* Dark mode global overrides */
+.dark body {
+  background-color: #0c0a09; /* stone-950 */
+  color: #e7e5e4; /* stone-200 */
+}
+
+/* ============================================
+   Accessibility (a11y) Global Styles
+   ============================================ */
+
+/* Screen-reader-only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Global focus-visible: only shows ring when navigating by keyboard, not mouse */
+:focus-visible {
+  outline: 2px solid oklch(65% 0.18 150); /* Zen Green */
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Remove default outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

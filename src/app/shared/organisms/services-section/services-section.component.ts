@@ -13,7 +13,10 @@ interface Service {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="py-24 relative" id="services">
+    <section
+      class="py-24 relative bg-stone-50 dark:bg-stone-900 transition-colors duration-500"
+      id="services"
+    >
       <!-- Decorator Blob -->
       <div
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl -z-10"

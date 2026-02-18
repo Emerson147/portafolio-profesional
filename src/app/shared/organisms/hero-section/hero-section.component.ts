@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ButtonComponent } from '../../atoms/button/button.component';
 import { CodeSnippetComponent } from '../../molecules/code-snippet/code-snippet.component';
 import { GsapService } from '../../../core/services/gsap.service';
+import { TranslateService } from '../../../core/services/translate.service';
 
 @Component({
   selector: 'app-hero-section',
@@ -10,7 +11,7 @@ import { GsapService } from '../../../core/services/gsap.service';
   imports: [CommonModule, ButtonComponent, CodeSnippetComponent],
   template: `
     <section
-      class="relative min-h-screen flex items-center px-6 pt-20 pb-12 overflow-hidden"
+      class="relative min-h-screen flex items-center px-6 pt-20 pb-12 overflow-hidden bg-white dark:bg-stone-950 transition-colors duration-500"
       (mousemove)="onMouseMove($event)"
     >
       <!-- Floating Abstract Circles (Parallax) -->
@@ -33,28 +34,38 @@ import { GsapService } from '../../../core/services/gsap.service';
               class="hero-reveal text-emerald-600 font-mono font-bold text-xs md:text-sm tracking-widest uppercase mb-2 flex items-center gap-2"
             >
               <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              // Systems Engineering Student
+              // {{ i18n.t().hero.badge }}
             </div>
           </div>
 
-          <h1 class="text-fluid-h1 font-bold text-stone-900 leading-[0.95] tracking-tight">
+          <h1
+            class="text-fluid-h1 font-bold text-stone-900 dark:text-stone-50 leading-[0.95] tracking-tight"
+          >
             <div class="overflow-hidden">
-              <span class="hero-reveal inline-block origin-bottom-left">Cultivando</span>
+              <span class="hero-reveal inline-block origin-bottom-left">{{
+                i18n.t().hero.line1
+              }}</span>
             </div>
             <div class="overflow-hidden">
               <span
                 class="hero-reveal inline-block origin-bottom-left text-transparent bg-clip-text bg-linear-to-r from-emerald-600 via-teal-500 to-cyan-500"
-                >Soluciones</span
+                >{{ i18n.t().hero.line2 }}</span
               >
             </div>
             <div class="overflow-hidden">
-              <span class="hero-reveal inline-block origin-bottom-left">Escalables.</span>
+              <span class="hero-reveal inline-block origin-bottom-left">{{
+                i18n.t().hero.line3
+              }}</span>
             </div>
           </h1>
 
           <!-- Simple intro line instead of paragraph -->
-          <p class="text-lg md:text-xl text-stone-500 hero-desc opacity-0 transform translate-y-4">
-            Hola, soy <strong class="text-stone-900">Emerson</strong> — Full Stack Developer
+          <p
+            class="text-lg md:text-xl text-stone-500 dark:text-stone-400 hero-desc opacity-0 transform translate-y-4"
+          >
+            {{ i18n.t().hero.intro }}
+            <strong class="text-stone-900 dark:text-stone-100">Emerson</strong> —
+            {{ i18n.t().hero.role }}
           </p>
 
           <div
@@ -66,10 +77,10 @@ import { GsapService } from '../../../core/services/gsap.service';
               [showArrow]="true"
               (click)="scrollTo($event, '#projects')"
             >
-              Ver Proyectos
+              {{ i18n.t().hero.cta_projects }}
             </app-button>
             <app-button variant="secondary" href="#about" (click)="scrollTo($event, '#about')">
-              Sobre Mí
+              {{ i18n.t().hero.cta_about }}
             </app-button>
           </div>
 
@@ -142,6 +153,7 @@ import { GsapService } from '../../../core/services/gsap.service';
 export class HeroSectionComponent {
   private platformId = inject(PLATFORM_ID);
   private gsap = inject(GsapService);
+  i18n = inject(TranslateService);
 
   onMouseMove(e: MouseEvent) {
     if (!isPlatformBrowser(this.platformId)) return;

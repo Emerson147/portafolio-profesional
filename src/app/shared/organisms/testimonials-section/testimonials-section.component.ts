@@ -13,7 +13,10 @@ interface Testimonial {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <section class="py-24 relative overflow-hidden bg-stone-50" id="testimonials">
+    <section
+      class="py-24 relative overflow-hidden bg-stone-50 dark:bg-stone-900 transition-colors duration-500"
+      id="testimonials"
+    >
       <div class="max-w-7xl mx-auto px-6 relative z-10">
         <!-- Section Header -->
         <div class="text-center mb-16 md:mb-24">
