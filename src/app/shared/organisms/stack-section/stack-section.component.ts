@@ -176,6 +176,7 @@ interface TechCategory {
         opacity: 0;
         transform: translateY(20px);
         animation: revealUp 0.6s ease forwards;
+        animation-fill-mode: forwards; /* Ensure it stays visible */
       }
 
       @keyframes revealUp {

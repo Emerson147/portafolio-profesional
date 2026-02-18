@@ -108,21 +108,30 @@ export class GsapService {
       });
     }
 
-    // Stack cards animation
-    const stackCards = document.querySelectorAll('.gs-reveal-card');
-    if (stackCards.length > 0) {
-      this.gsap.from('.gs-reveal-card', {
-        scrollTrigger: {
-          trigger: '#stack',
-          start: 'top 75%',
-        },
-        x: -50,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'power2.out',
-      });
-    }
+    // Generic card animations for multiple sections
+    const cardSections = ['#stack', '#services', '#testimonials'];
+
+    cardSections.forEach((sectionId) => {
+      const cards = document.querySelectorAll(`${sectionId} .gs-reveal-card`);
+
+      if (cards.length > 0) {
+        // Ensure initial state is hidden
+        this.gsap.set(cards, { autoAlpha: 0, y: 30 });
+
+        this.gsap.to(cards, {
+          scrollTrigger: {
+            trigger: sectionId,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power2.out',
+        });
+      }
+    });
   }
 
   scrollTo(target: string | number, offset = 0) {

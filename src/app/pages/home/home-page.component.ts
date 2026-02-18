@@ -1,4 +1,4 @@
-import { Component, inject, AfterViewInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, AfterViewInit, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.component';
 import { NavbarComponent } from '../../shared/organisms/navbar/navbar.component';
@@ -7,6 +7,9 @@ import { HeroSectionComponent } from '../../shared/organisms/hero-section/hero-s
 import { AboutSectionComponent } from '../../shared/organisms/about-section/about-section.component';
 import { StackSectionComponent } from '../../shared/organisms/stack-section/stack-section.component';
 import { ProjectsSectionComponent } from '../../shared/organisms/projects-section/projects-section.component';
+import { ProcessSectionComponent } from '../../shared/organisms/process-section/process-section.component';
+import { ServicesSectionComponent } from '../../shared/organisms/services-section/services-section.component';
+import { TestimonialsSectionComponent } from '../../shared/organisms/testimonials-section/testimonials-section.component';
 import { FooterComponent } from '../../shared/organisms/footer/footer.component';
 import { GsapService } from '../../core/services/gsap.service';
 
@@ -20,6 +23,9 @@ import { GsapService } from '../../core/services/gsap.service';
     LoadingScreenComponent,
     HeroSectionComponent,
     AboutSectionComponent,
+    ProcessSectionComponent,
+    ServicesSectionComponent,
+    TestimonialsSectionComponent,
     StackSectionComponent,
     ProjectsSectionComponent,
     FooterComponent,
@@ -33,8 +39,11 @@ import { GsapService } from '../../core/services/gsap.service';
       <app-navbar />
       <app-hero-section />
       <app-about-section />
+      <app-process-section />
       <app-stack-section />
+      <app-services-section />
       <app-projects-section />
+      <app-testimonials-section />
       <app-footer />
     </app-main-layout>
   `,
@@ -46,21 +55,29 @@ import { GsapService } from '../../core/services/gsap.service';
     `,
   ],
 })
-export class HomePageComponent implements AfterViewInit {
+export class HomePageComponent implements OnInit, AfterViewInit {
   private gsap = inject(GsapService);
   private platformId = inject(PLATFORM_ID);
+  private gsapLoadedPromise!: Promise<void>;
 
-  ngAfterViewInit() {
+  ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.gsap.loadGsap();
+      this.gsapLoadedPromise = this.gsap.loadGsap();
+    } else {
+      this.gsapLoadedPromise = Promise.resolve();
     }
   }
 
-  onLoadingComplete() {
+  ngAfterViewInit() {
+    // Other view init logic if needed
+  }
+
+  async onLoadingComplete() {
+    await this.gsapLoadedPromise;
     setTimeout(() => {
       this.gsap.revealMainContainer();
       this.gsap.animateHero();
       this.gsap.setupScrollTriggers();
-    }, 100);
+    }, 500);
   }
 }
