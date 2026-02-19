@@ -1,19 +1,31 @@
-import { Component, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  OnInit,
+  OnDestroy,
+  PLATFORM_ID,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { GsapService } from '../../../core/services/gsap.service';
-import { ICONS } from '../../../core/data/icons.data';
+import { ICONS, TECH_ICONS } from '../../../core/data/icons.data';
 
 interface TechItem {
   name: string;
   level: 'Avanzado' | 'Intermedio' | 'Aprendiendo';
   years?: number;
+  iconKey?: keyof typeof TECH_ICONS;
 }
 
 interface TechCategory {
   title: string;
   subtitle: string;
   icon: keyof typeof ICONS;
+  accentColor: string; // unique color per category
   items: TechItem[];
 }
 
@@ -24,6 +36,7 @@ interface TechCategory {
   template: `
     <section
       id="stack"
+      #sectionEl
       class="py-24 md:py-32 px-6 bg-slate-900 text-white relative overflow-hidden"
     >
       <!-- Top accent line -->
@@ -39,7 +52,7 @@ interface TechCategory {
 
       <div class="max-w-6xl mx-auto relative z-10">
         <!-- Header -->
-        <div class="mb-14 gs-reveal">
+        <div class="mb-14 stack-reveal">
           <span
             class="text-emerald-400 font-mono font-bold text-xs tracking-widest uppercase mb-3 block"
           >
@@ -57,66 +70,89 @@ interface TechCategory {
           </p>
         </div>
 
-        <!-- Grid 2x2 Layout -->
+        <!-- Grid 2x2 -->
         <div class="grid md:grid-cols-2 gap-5">
           @for (category of categories; track category.title; let i = $index) {
             <div
-              class="group bg-white/5 border border-white/10 rounded-xl p-6 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 gs-reveal"
-              [style.animation-delay.ms]="i * 100"
+              class="stack-card group border border-white/10 rounded-xl p-6 transition-all duration-300"
+              [style.--accent]="category.accentColor"
+              style="background: rgba(255,255,255,0.04); will-change: transform;"
+              [style.animation-delay.ms]="i * 80"
+              (mousemove)="onCardTilt($event)"
+              (mouseleave)="onCardReset($event)"
             >
-              <!-- Header with Icon -->
+              <!-- Category header -->
               <div class="flex items-center gap-3 mb-5">
-                <!-- Category Icon -->
                 <div
-                  class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors"
+                  class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-300"
+                  [style.background]="category.accentColor + '18'"
                 >
                   <span
-                    class="w-5 h-5 text-emerald-400"
+                    class="w-5 h-5"
+                    [style.color]="category.accentColor"
                     [innerHTML]="getSafeIcon(category.icon)"
                   ></span>
                 </div>
                 <div>
-                  <h3
-                    class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors"
-                  >
+                  <h3 class="text-lg font-bold text-white transition-colors duration-200">
                     {{ category.title }}
                   </h3>
                   <span class="text-xs text-slate-500 font-mono">{{ category.subtitle }}</span>
                 </div>
               </div>
 
-              <!-- Tech Items with Level Bars -->
-              <div class="space-y-3">
+              <!-- Tech items -->
+              <div class="space-y-4">
                 @for (item of category.items; track item.name) {
-                  <div class="group/item relative">
-                    <div class="flex items-center justify-between mb-1.5">
+                  <div class="tech-item">
+                    <!-- Row: icon + name + dots -->
+                    <div class="flex items-center justify-between mb-2">
                       <div class="flex items-center gap-2">
+                        <!-- ② Tech logo icon -->
+                        @if (item.iconKey) {
+                          <span
+                            class="w-4 h-4 shrink-0"
+                            [style.color]="category.accentColor"
+                            [innerHTML]="getSafeTechIcon(item.iconKey)"
+                          ></span>
+                        } @else {
+                          <span
+                            class="w-1.5 h-1.5 rounded-full shrink-0"
+                            [style.background]="category.accentColor"
+                          ></span>
+                        }
                         <span
-                          class="w-1.5 h-1.5 bg-emerald-500 rounded-full group-hover/item:animate-pulse"
-                        ></span>
-                        <span
-                          class="text-sm text-slate-300 group-hover/item:text-white transition-colors"
-                          >{{ item.name }}</span
+                          class="text-sm text-slate-300 group-hover:text-white transition-colors"
                         >
+                          {{ item.name }}
+                        </span>
+                        @if (item.years) {
+                          <span class="text-xs text-slate-600 font-mono"> {{ item.years }}y </span>
+                        }
                       </div>
-                      <!-- Level tooltip on hover with years -->
-                      <span
-                        class="text-xs px-2 py-0.5 rounded-full opacity-0 group-hover/item:opacity-100 transition-opacity duration-300"
-                        [class]="getLevelClass(item.level)"
-                      >
-                        {{ item.level
-                        }}{{
-                          item.years
-                            ? ' • ' + item.years + (item.years === 1 ? ' año' : ' años')
-                            : ''
-                        }}
-                      </span>
+
+                      <!-- ③ Level dot indicators (always visible) -->
+                      <div class="flex items-center gap-1" [title]="item.level">
+                        @for (dot of [1, 2, 3]; track dot) {
+                          <span
+                            class="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                            [style.background]="
+                              dot <= getLevelDots(item.level)
+                                ? category.accentColor
+                                : 'rgba(255,255,255,0.12)'
+                            "
+                          ></span>
+                        }
+                      </div>
                     </div>
-                    <!-- Progress bar -->
-                    <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+
+                    <!-- ① Progress bar (animated on intersection) -->
+                    <div class="h-px bg-white/5 rounded-full overflow-hidden">
                       <div
-                        class="h-full bg-emerald-500/50 rounded-full transition-all duration-700 group-hover/item:bg-emerald-500"
-                        [style.width]="getLevelWidth(item.level)"
+                        class="progress-bar h-full rounded-full"
+                        [style.background]="category.accentColor + '80'"
+                        [style.--target-width]="getLevelWidth(item.level)"
+                        style="width: 0%; transition: width 0.9s cubic-bezier(0.4,0,0.2,1);"
                       ></div>
                     </div>
                   </div>
@@ -126,16 +162,16 @@ interface TechCategory {
           }
         </div>
 
-        <!-- Featured Tags - Animated -->
-        <div
-          class="flex flex-wrap justify-center gap-3 mt-12 pt-8 border-t border-white/10 gs-reveal"
-        >
-          <span class="text-slate-500 text-sm mr-4">Destacados:</span>
+        <!-- Featured Tags with micro icons -->
+        <div class="flex flex-wrap justify-center gap-3 mt-12 pt-8 border-t border-white/10 stack-reveal">
+          <span class="text-slate-500 text-sm self-center">Destacados:</span>
           @for (tech of featuredTechs; track tech; let i = $index) {
             <span
-              class="px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 hover:border-emerald-500/50 hover:scale-105 transition-all duration-300 cursor-default"
-              [style.animation-delay.ms]="i * 50"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/8 border border-emerald-500/20 rounded-full text-emerald-400 text-sm font-mono hover:bg-emerald-500/15 hover:border-emerald-500/40 hover:scale-105 transition-all duration-200 cursor-default"
             >
+              @if (getFeaturedIcon(tech)) {
+                <span class="w-3.5 h-3.5 opacity-75" [innerHTML]="getSafeTechIcon(getFeaturedIcon(tech)!)"></span>
+              }
               {{ tech }}
             </span>
           }
@@ -144,7 +180,7 @@ interface TechCategory {
         <!-- Stats Row -->
         <div class="grid grid-cols-3 gap-8 mt-12 pt-10 border-t border-white/10">
           @for (stat of animatedStats(); track stat.label) {
-            <div class="text-center gs-reveal group cursor-default">
+            <div class="text-center stack-reveal group cursor-default">
               <div
                 class="text-2xl md:text-3xl font-bold text-white group-hover:text-emerald-400 transition-colors"
               >
@@ -172,47 +208,71 @@ interface TechCategory {
         display: block;
       }
 
-      .gs-reveal {
+      /* ① Scroll-triggered reveal */
+      .stack-reveal {
         opacity: 0;
         transform: translateY(20px);
-        animation: revealUp 0.6s ease forwards;
-        animation-fill-mode: forwards; /* Ensure it stays visible */
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .stack-reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
       }
 
-      @keyframes revealUp {
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .stack-card {
+        opacity: 0;
+        transform: translateY(16px);
+        transition:
+          opacity 0.5s ease,
+          transform 0.5s ease,
+          border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .stack-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .stack-card:hover {
+        border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+        box-shadow: 0 8px 32px color-mix(in srgb, var(--accent) 8%, transparent);
       }
     `,
   ],
 })
-export class StackSectionComponent implements OnInit {
+export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('sectionEl') sectionRef!: ElementRef<HTMLElement>;
+
   private platformId = inject(PLATFORM_ID);
   private gsap = inject(GsapService);
   private sanitizer = inject(DomSanitizer);
 
+  private observer: IntersectionObserver | null = null;
+
+  // ─── Categories with per-category accent color & tech logos ─────────────────
   categories: TechCategory[] = [
     {
       title: 'Backend Core',
       subtitle: '// server-side',
       icon: 'database',
+      accentColor: '#f97316', // Java orange
       items: [
-        { name: 'Java 17/21', level: 'Avanzado', years: 4 },
-        { name: 'Spring Boot 3', level: 'Avanzado', years: 3 },
-        { name: 'PostgreSQL', level: 'Avanzado', years: 3 },
-        { name: 'Docker', level: 'Intermedio', years: 2 },
+        { name: 'Java 17/21', level: 'Avanzado', years: 4, iconKey: 'Java' },
+        { name: 'Spring Boot 3', level: 'Avanzado', years: 3, iconKey: 'Spring Boot' },
+        { name: 'PostgreSQL', level: 'Avanzado', years: 3, iconKey: 'PostgreSQL' },
+        { name: 'Docker', level: 'Intermedio', years: 2, iconKey: 'Docker' },
       ],
     },
     {
       title: 'Frontend',
       subtitle: '// client-side',
       icon: 'layers',
+      accentColor: '#dd0031', // Angular red
       items: [
-        { name: 'Angular 17+', level: 'Avanzado', years: 3 },
-        { name: 'Tailwind CSS', level: 'Avanzado', years: 2 },
-        { name: 'PrimeNG', level: 'Intermedio', years: 2 },
+        { name: 'Angular 17+', level: 'Avanzado', years: 3, iconKey: 'Angular' },
+        { name: 'Tailwind CSS', level: 'Avanzado', years: 2, iconKey: 'Tailwind' },
+        { name: 'PrimeNG', level: 'Intermedio', years: 2, iconKey: 'PrimeNG' },
         { name: 'Astro', level: 'Aprendiendo', years: 1 },
       ],
     },
@@ -220,6 +280,7 @@ export class StackSectionComponent implements OnInit {
       title: 'Cloud & DevOps',
       subtitle: '// infrastructure',
       icon: 'cloud',
+      accentColor: '#38bdf8', // AWS/cloud blue
       items: [
         { name: 'AWS', level: 'Intermedio', years: 2 },
         { name: 'CI/CD', level: 'Intermedio', years: 2 },
@@ -231,6 +292,7 @@ export class StackSectionComponent implements OnInit {
       title: 'Metodologías',
       subtitle: '// workflow',
       icon: 'gitBranch',
+      accentColor: '#a78bfa', // purple
       items: [
         { name: 'Scrum', level: 'Avanzado', years: 3 },
         { name: 'Clean Arch', level: 'Intermedio', years: 2 },
@@ -241,6 +303,18 @@ export class StackSectionComponent implements OnInit {
   ];
 
   featuredTechs = ['Spring Boot', 'Angular', 'Docker', 'PostgreSQL', 'AWS'];
+
+  // Map featured tag label → TECH_ICONS key
+  private featuredIconMap: Partial<Record<string, keyof typeof TECH_ICONS>> = {
+    'Spring Boot': 'Spring Boot',
+    'Angular':     'Angular',
+    'Docker':      'Docker',
+    'PostgreSQL':  'PostgreSQL',
+  };
+
+  getFeaturedIcon(tech: string): keyof typeof TECH_ICONS | null {
+    return this.featuredIconMap[tech] ?? null;
+  }
 
   animatedStats = signal([
     { value: '4+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 4, suffix: '+' },
@@ -262,67 +336,127 @@ export class StackSectionComponent implements OnInit {
     },
   ]);
 
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => this.animateCounters(), 2000);
-    }
+  ngOnInit() {}
+
+  ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.setupIntersectionObserver();
   }
 
+  ngOnDestroy() {
+    this.observer?.disconnect();
+  }
+
+  // ① IntersectionObserver: triggers reveals & bar animations
+  private setupIntersectionObserver() {
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const el = entry.target as HTMLElement;
+
+          // Section-level reveals
+          if (el.classList.contains('stack-reveal') || el.classList.contains('stack-card')) {
+            el.classList.add('visible');
+            this.observer?.unobserve(el);
+          }
+
+          // When the section itself enters view: animate all bars + counters
+          if (el === this.sectionRef?.nativeElement) {
+            setTimeout(() => this.animateBars(), 300);
+            setTimeout(() => this.animateCounters(), 600);
+            this.observer?.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' },
+    );
+
+    // Observe section root (for bars + counters)
+    if (this.sectionRef?.nativeElement) {
+      this.observer.observe(this.sectionRef.nativeElement);
+    }
+
+    // Observe individual reveal elements
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.stack-reveal, .stack-card').forEach((el) => {
+        this.observer?.observe(el);
+      });
+    });
+  }
+
+  // ① Animate progress bars to their target width
+  private animateBars() {
+    const bars = document.querySelectorAll<HTMLElement>('.progress-bar');
+    bars.forEach((bar, i) => {
+      setTimeout(() => {
+        const target = bar.style.getPropertyValue('--target-width') || '0%';
+        bar.style.width = target;
+      }, i * 60);
+    });
+  }
+
+  // Counter animation
   private animateCounters() {
     const stats = this.animatedStats();
-    const duration = 1500;
+    const duration = 1400;
     const steps = 30;
     const interval = duration / steps;
 
     stats.forEach((stat, index) => {
-      if (stat.isNumber) {
-        let current = 0;
-        const increment = stat.target / steps;
+      if (!stat.isNumber) return;
+      let current = 0;
+      const increment = stat.target / steps;
 
-        const timer = setInterval(() => {
-          current += increment;
-          if (current >= stat.target) {
-            current = stat.target;
-            clearInterval(timer);
-          }
-
-          this.animatedStats.update((s) => {
-            const updated = [...s];
-            updated[index] = { ...updated[index], currentValue: Math.floor(current) };
-            return updated;
-          });
-        }, interval);
-      }
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= stat.target) {
+          current = stat.target;
+          clearInterval(timer);
+        }
+        this.animatedStats.update((s) => {
+          const updated = [...s];
+          updated[index] = { ...updated[index], currentValue: Math.floor(current) };
+          return updated;
+        });
+      }, interval);
     });
+  }
+
+  // ③ Level → number of filled dots (max 3)
+  getLevelDots(level: string): number {
+    return level === 'Avanzado' ? 3 : level === 'Intermedio' ? 2 : 1;
+  }
+
+  getLevelWidth(level: string): string {
+    return level === 'Avanzado' ? '90%' : level === 'Intermedio' ? '62%' : '35%';
   }
 
   getSafeIcon(iconName: keyof typeof ICONS): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(ICONS[iconName] || '');
   }
 
-  getLevelWidth(level: string): string {
-    switch (level) {
-      case 'Avanzado':
-        return '90%';
-      case 'Intermedio':
-        return '65%';
-      case 'Aprendiendo':
-        return '35%';
-      default:
-        return '50%';
-    }
+  getSafeTechIcon(iconName: keyof typeof TECH_ICONS): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[iconName] || '');
   }
 
-  getLevelClass(level: string): string {
-    switch (level) {
-      case 'Avanzado':
-        return 'bg-emerald-500/20 text-emerald-400';
-      case 'Intermedio':
-        return 'bg-teal-500/20 text-teal-400';
-      case 'Aprendiendo':
-        return 'bg-amber-500/20 text-amber-400';
-      default:
-        return 'bg-slate-500/20 text-slate-400';
-    }
+  // ④ Subtle 3D tilt — max ±6° rotation, disabled on coarse pointer (mobile)
+  onCardTilt(event: MouseEvent) {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    const card = event.currentTarget as HTMLElement;
+    const rect  = card.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width  - 0.5;  // -0.5 → 0.5
+    const y = (event.clientY - rect.top)  / rect.height - 0.5;
+    const tiltX =  y * -6;   // tilt up when cursor at top
+    const tiltY =  x *  6;
+    card.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(4px)`;
+    card.style.transition = 'transform 0.08s ease';
+  }
+
+  onCardReset(event: MouseEvent) {
+    const card = event.currentTarget as HTMLElement;
+    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+    card.style.transition = 'transform 0.4s ease';
   }
 }

@@ -1,7 +1,19 @@
-import { Component, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  PLATFORM_ID,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { GsapService } from '../../../core/services/gsap.service';
 import { TranslateService } from '../../../core/services/translate.service';
+import { TECH_ICONS } from '../../../core/data/icons.data';
 
 @Component({
   selector: 'app-about-section',
@@ -10,6 +22,7 @@ import { TranslateService } from '../../../core/services/translate.service';
   template: `
     <section
       id="about"
+      #sectionEl
       class="py-24 md:py-32 px-6 bg-white dark:bg-stone-950 relative overflow-hidden transition-colors duration-500"
     >
       <!-- Subtle Pattern -->
@@ -19,8 +32,8 @@ import { TranslateService } from '../../../core/services/translate.service';
       ></div>
 
       <div class="max-w-6xl mx-auto relative z-10">
-        <!-- Section Header - LEFT ALIGNED -->
-        <div class="mb-14 gs-reveal">
+        <!-- Section Header -->
+        <div class="mb-14 about-reveal">
           <span
             class="text-emerald-600 font-mono font-bold text-xs tracking-widest uppercase mb-3 block"
           >
@@ -35,8 +48,8 @@ import { TranslateService } from '../../../core/services/translate.service';
         </div>
 
         <div class="grid lg:grid-cols-5 gap-10 lg:gap-14 items-start">
-          <!-- Photo (2 cols) - ENHANCED HOVER -->
-          <div class="lg:col-span-2 gs-reveal">
+          <!-- Photo (2 cols) -->
+          <div class="lg:col-span-2 about-reveal">
             <div class="relative group max-w-xs mx-auto lg:mx-0">
               <div class="relative aspect-square">
                 <!-- Animated decorative frames -->
@@ -47,7 +60,7 @@ import { TranslateService } from '../../../core/services/translate.service';
                   class="absolute -inset-3 border border-emerald-500/20 rounded-2xl transform -rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-500"
                 ></div>
 
-                <!-- Photo with zoom effect -->
+                <!-- Photo -->
                 <div
                   class="relative bg-stone-100 rounded-xl overflow-hidden aspect-square shadow-lg group-hover:shadow-2xl group-hover:shadow-emerald-500/20 transition-all duration-500"
                 >
@@ -58,11 +71,11 @@ import { TranslateService } from '../../../core/services/translate.service';
                   />
                   <!-- Overlay on hover -->
                   <div
-                    class="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    class="absolute inset-0 bg-linear-to-t from-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   ></div>
                 </div>
 
-                <!-- Available Badge - Animated -->
+                <!-- Available Badge -->
                 <div
                   class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-1.5 rounded-full shadow-lg flex items-center gap-2 group-hover:bg-emerald-600 transition-colors duration-300"
                 >
@@ -96,17 +109,15 @@ import { TranslateService } from '../../../core/services/translate.service';
           <!-- Content (3 cols) -->
           <div class="lg:col-span-3 space-y-5">
             <!-- Name & Title -->
-            <div class="gs-reveal">
+            <div class="about-reveal">
               <h3 class="text-xl md:text-2xl font-bold text-stone-900 dark:text-stone-100 mb-1">
                 {{ i18n.t().about.name }}
               </h3>
-              <p class="text-emerald-600 font-mono text-sm">
-                {{ i18n.t().about.subtitle }}
-              </p>
+              <p class="text-emerald-600 font-mono text-sm">{{ i18n.t().about.subtitle }}</p>
             </div>
 
-            <!-- Full Bio -->
-            <div class="text-stone-600 dark:text-stone-400 leading-relaxed space-y-4 gs-reveal">
+            <!-- Bio -->
+            <div class="text-stone-600 dark:text-stone-400 leading-relaxed space-y-4 about-reveal">
               <p>
                 <strong class="text-stone-800 dark:text-stone-200"
                   >Técnico Titulado en Computación y Soluciones Informáticas</strong
@@ -143,46 +154,65 @@ import { TranslateService } from '../../../core/services/translate.service';
               </p>
             </div>
 
-            <!-- Tech Cards - INTERACTIVE -->
-            <div class="grid grid-cols-2 gap-4 pt-2 gs-reveal">
+            <!-- Tech Cards with icons -->
+            <div class="grid grid-cols-2 gap-4 pt-2 about-reveal">
+              <!-- Backend -->
               <div
-                class="group/card bg-stone-50 dark:bg-stone-900 p-4 rounded-lg border border-stone-100 dark:border-stone-800 hover:border-emerald-500 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 cursor-default active:scale-[0.98]"
+                class="group/card bg-stone-50 dark:bg-stone-900 p-4 rounded-lg border border-stone-100 dark:border-stone-800 hover:border-orange-400/50 hover:bg-orange-50/30 dark:hover:bg-orange-950/20 hover:shadow-lg hover:shadow-orange-500/8 transition-all duration-300 cursor-default active:scale-[0.98]"
               >
-                <div class="text-emerald-600 font-bold text-sm mb-2 flex items-center gap-2">
+                <div
+                  class="text-orange-600 dark:text-orange-400 font-bold text-sm mb-3 flex items-center gap-2"
+                >
                   <span
-                    class="w-2 h-2 bg-emerald-500 rounded-full group-hover/card:animate-pulse"
+                    class="w-2 h-2 bg-orange-500 rounded-full group-hover/card:animate-pulse"
                   ></span>
                   Backend
                 </div>
                 <div
-                  class="text-stone-600 dark:text-stone-400 text-xs space-y-1 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
+                  class="text-stone-600 dark:text-stone-400 text-xs space-y-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
                 >
-                  <div>• Java · Spring Boot</div>
-                  <div>• SQL Server · PostgreSQL</div>
-                  <div>• Docker · AWS</div>
+                  @for (item of backendItems; track item.label) {
+                    <div class="flex items-center gap-1.5">
+                      <span
+                        class="w-3 h-3 shrink-0 text-orange-500/70"
+                        [innerHTML]="getSafeIcon(item.icon)"
+                      ></span>
+                      <span>{{ item.label }}</span>
+                    </div>
+                  }
                 </div>
               </div>
+
+              <!-- Frontend -->
               <div
-                class="group/card bg-stone-50 dark:bg-stone-900 p-4 rounded-lg border border-stone-100 dark:border-stone-800 hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-teal-950/30 hover:shadow-lg hover:shadow-teal-500/10 transition-all duration-300 cursor-default active:scale-[0.98]"
+                class="group/card bg-stone-50 dark:bg-stone-900 p-4 rounded-lg border border-stone-100 dark:border-stone-800 hover:border-red-400/50 hover:bg-red-50/30 dark:hover:bg-red-950/20 hover:shadow-lg hover:shadow-red-500/8 transition-all duration-300 cursor-default active:scale-[0.98]"
               >
-                <div class="text-teal-600 font-bold text-sm mb-2 flex items-center gap-2">
+                <div
+                  class="text-red-600 dark:text-red-400 font-bold text-sm mb-3 flex items-center gap-2"
+                >
                   <span
-                    class="w-2 h-2 bg-teal-500 rounded-full group-hover/card:animate-pulse"
+                    class="w-2 h-2 bg-red-500 rounded-full group-hover/card:animate-pulse"
                   ></span>
                   Frontend
                 </div>
                 <div
-                  class="text-stone-600 dark:text-stone-400 text-xs space-y-1 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
+                  class="text-stone-600 dark:text-stone-400 text-xs space-y-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
                 >
-                  <div>• Angular · Astro</div>
-                  <div>• Tailwind CSS · PrimeNG</div>
-                  <div>• HTML5 · CSS3 · JS</div>
+                  @for (item of frontendItems; track item.label) {
+                    <div class="flex items-center gap-1.5">
+                      <span
+                        class="w-3 h-3 shrink-0 text-red-500/70"
+                        [innerHTML]="getSafeIcon(item.icon)"
+                      ></span>
+                      <span>{{ item.label }}</span>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
 
-            <!-- CTA -->
-            <div class="flex flex-wrap gap-3 pt-3 gs-reveal">
+            <!-- CTAs -->
+            <div class="flex flex-wrap gap-3 pt-3 about-reveal">
               <a
                 href="#contact"
                 (click)="scrollToContact($event)"
@@ -243,12 +273,12 @@ import { TranslateService } from '../../../core/services/translate.service';
           </div>
         </div>
 
-        <!-- Stats - ANIMATED COUNTERS -->
+        <!-- Stats — animated on intersection -->
         <div
           class="grid grid-cols-3 gap-8 mt-14 pt-10 border-t border-stone-100 dark:border-stone-800"
         >
-          @for (stat of animatedStats(); track stat.label; let i = $index) {
-            <div class="text-center gs-reveal group cursor-default">
+          @for (stat of animatedStats(); track stat.label) {
+            <div class="text-center about-reveal group cursor-default">
               <div
                 class="text-2xl md:text-3xl font-bold text-stone-800 dark:text-stone-200 group-hover:text-emerald-600 transition-colors"
               >
@@ -275,17 +305,47 @@ import { TranslateService } from '../../../core/services/translate.service';
       :host {
         display: block;
       }
+
+      .about-reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.55s ease,
+          transform 0.55s ease;
+      }
+      .about-reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
     `,
   ],
 })
-export class AboutSectionComponent implements OnInit {
+export class AboutSectionComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('sectionEl') sectionRef!: ElementRef<HTMLElement>;
+
   private gsap = inject(GsapService);
   private platformId = inject(PLATFORM_ID);
+  private sanitizer = inject(DomSanitizer);
   i18n = inject(TranslateService);
 
+  private observer: IntersectionObserver | null = null;
+
+  // Tech card items with icons
+  backendItems = [
+    { label: 'Java · Spring Boot', icon: 'Java' as keyof typeof TECH_ICONS },
+    { label: 'SQL Server · PostgreSQL', icon: 'PostgreSQL' as keyof typeof TECH_ICONS },
+    { label: 'Docker · AWS', icon: 'Docker' as keyof typeof TECH_ICONS },
+  ];
+
+  frontendItems = [
+    { label: 'Angular · Astro', icon: 'Angular' as keyof typeof TECH_ICONS },
+    { label: 'Tailwind · PrimeNG', icon: 'Tailwind' as keyof typeof TECH_ICONS },
+    { label: 'HTML5 · CSS3 · JS', icon: 'Angular' as keyof typeof TECH_ICONS },
+  ];
+
   animatedStats = signal([
-    { value: '2+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 2, suffix: '+' },
-    { value: '10+', label: 'Proyectos', isNumber: true, currentValue: 0, target: 10, suffix: '+' },
+    { value: '3+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 3, suffix: '+' },
+    { value: '15+', label: 'Proyectos', isNumber: true, currentValue: 0, target: 15, suffix: '+' },
     {
       value: 'Full Stack',
       label: 'Enfoque',
@@ -296,39 +356,78 @@ export class AboutSectionComponent implements OnInit {
     },
   ]);
 
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      // Start counter animation after a delay
-      setTimeout(() => this.animateCounters(), 2000);
+  ngOnInit() {}
+
+  ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.setupIntersectionObserver();
+  }
+
+  ngOnDestroy() {
+    this.observer?.disconnect();
+  }
+
+  private setupIntersectionObserver() {
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const el = entry.target as HTMLElement;
+
+          if (el.classList.contains('about-reveal')) {
+            el.classList.add('visible');
+            this.observer?.unobserve(el);
+          }
+
+          if (el === this.sectionRef?.nativeElement) {
+            setTimeout(() => this.animateCounters(), 400);
+            this.observer?.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' },
+    );
+
+    if (this.sectionRef?.nativeElement) {
+      this.observer.observe(this.sectionRef.nativeElement);
     }
+
+    requestAnimationFrame(() => {
+      document.querySelectorAll('#about .about-reveal').forEach((el) => {
+        this.observer?.observe(el);
+      });
+    });
   }
 
   private animateCounters() {
     const stats = this.animatedStats();
-    const duration = 1500; // 1.5 seconds
+    const duration = 1400;
     const steps = 30;
     const interval = duration / steps;
 
     stats.forEach((stat, index) => {
-      if (stat.isNumber) {
-        let current = 0;
-        const increment = stat.target / steps;
+      if (!stat.isNumber) return;
+      let current = 0;
+      const increment = stat.target / steps;
 
-        const timer = setInterval(() => {
-          current += increment;
-          if (current >= stat.target) {
-            current = stat.target;
-            clearInterval(timer);
-          }
-
-          this.animatedStats.update((s) => {
-            const updated = [...s];
-            updated[index] = { ...updated[index], currentValue: Math.floor(current) };
-            return updated;
-          });
-        }, interval);
-      }
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= stat.target) {
+          current = stat.target;
+          clearInterval(timer);
+        }
+        this.animatedStats.update((s) => {
+          const u = [...s];
+          u[index] = { ...u[index], currentValue: Math.floor(current) };
+          return u;
+        });
+      }, interval);
     });
+  }
+
+  getSafeIcon(iconName: keyof typeof TECH_ICONS): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[iconName] || '');
   }
 
   scrollToContact(event: Event) {

@@ -1,11 +1,220 @@
-import { Component, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import gsap from 'gsap';
 
-interface CodeLine {
+// ── Token types & colors (VS Code Dark+ palette) ─────────────────────────────
+type TType =
+  | 'annotation'
+  | 'keyword'
+  | 'type'
+  | 'method'
+  | 'string'
+  | 'comment'
+  | 'bracket'
+  | 'variable'
+  | 'number'
+  | 'operator'
+  | 'plain';
+
+interface Token {
   text: string;
-  indent: number;
-  type: 'keyword' | 'class' | 'type' | 'string' | 'comment' | 'method' | 'bracket' | 'annotation';
+  t: TType;
 }
+interface CodeLine {
+  tokens: Token[];
+  indent: number;
+  speed?: number; // ms to wait before revealing (default 300ms)
+}
+
+interface Tab {
+  filename: string;
+  lang: string;
+  lines: CodeLine[];
+}
+
+// ── Helper ────────────────────────────────────────────────────────────────────
+const k = (text: string): Token => ({ text, t: 'keyword' });
+const a = (text: string): Token => ({ text, t: 'annotation' });
+const ty = (text: string): Token => ({ text, t: 'type' });
+const m = (text: string): Token => ({ text, t: 'method' });
+const s = (text: string): Token => ({ text, t: 'string' });
+const c = (text: string): Token => ({ text, t: 'comment' });
+const br = (text: string): Token => ({ text, t: 'bracket' });
+const v = (text: string): Token => ({ text, t: 'variable' });
+const pl = (text: string): Token => ({ text, t: 'plain' });
+const op = (text: string): Token => ({ text, t: 'operator' });
+
+// ── Java Spring Boot tab ──────────────────────────────────────────────────────
+const JAVA_LINES: CodeLine[] = [
+  { indent: 0, speed: 120, tokens: [a('@RestController')] },
+  {
+    indent: 0,
+    speed: 120,
+    tokens: [a('@RequestMapping'), br('('), s('"/api/v1/portfolio"'), br(')')],
+  },
+  { indent: 0, speed: 160, tokens: [k('public class '), ty('PortfolioController '), br('{')] },
+  { indent: 0, speed: 60, tokens: [] }, // blank
+  { indent: 1, speed: 140, tokens: [a('@Autowired')] },
+  {
+    indent: 1,
+    speed: 140,
+    tokens: [k('private '), ty('PortfolioService '), v('service'), op(';')],
+  },
+  { indent: 0, speed: 60, tokens: [] },
+  { indent: 1, speed: 120, tokens: [a('@GetMapping'), br('('), s('"/projects"'), br(')')] },
+  {
+    indent: 1,
+    speed: 200,
+    tokens: [
+      k('public '),
+      ty('ResponseEntity'),
+      br('<'),
+      ty('List'),
+      br('<'),
+      ty('Project'),
+      br('>> '),
+      m('getAll'),
+      br('() {'),
+    ],
+  },
+  {
+    indent: 2,
+    speed: 240,
+    tokens: [
+      k('return '),
+      ty('ResponseEntity'),
+      op('.'),
+      m('ok'),
+      br('('),
+      v('service'),
+      op('.'),
+      m('findAll'),
+      br('());'),
+    ],
+  },
+  { indent: 1, speed: 80, tokens: [br('}')] },
+  { indent: 0, speed: 60, tokens: [] },
+  { indent: 1, speed: 100, tokens: [c('// POST /contact — envía mensaje')] },
+  { indent: 1, speed: 120, tokens: [a('@PostMapping'), br('('), s('"/contact"'), br(')')] },
+  {
+    indent: 1,
+    speed: 200,
+    tokens: [
+      k('public '),
+      ty('ResponseEntity'),
+      br('<'),
+      k('void'),
+      br('> '),
+      m('contact'),
+      br('('),
+      a('@RequestBody '),
+      ty('ContactDto '),
+      v('dto'),
+      br(') {'),
+    ],
+  },
+  {
+    indent: 2,
+    speed: 220,
+    tokens: [v('service'), op('.'), m('sendMessage'), br('('), v('dto'), br(');')],
+  },
+  {
+    indent: 2,
+    speed: 220,
+    tokens: [
+      k('return '),
+      ty('ResponseEntity'),
+      op('.'),
+      m('accepted'),
+      br('().'),
+      m('build'),
+      br('();'),
+    ],
+  },
+  { indent: 1, speed: 80, tokens: [br('}')] },
+  { indent: 0, speed: 80, tokens: [br('}')] },
+];
+
+// ── Angular TypeScript tab ────────────────────────────────────────────────────
+const TS_LINES: CodeLine[] = [
+  { indent: 0, speed: 120, tokens: [a('@Component'), br('({')] },
+  { indent: 1, speed: 160, tokens: [v('selector'), op(': '), s("'app-portfolio'"), op(',')] },
+  { indent: 1, speed: 140, tokens: [v('standalone'), op(': '), k('true'), op(',')] },
+  { indent: 0, speed: 80, tokens: [br('})')] },
+  { indent: 0, speed: 60, tokens: [] },
+  {
+    indent: 0,
+    speed: 160,
+    tokens: [
+      k('export class '),
+      ty('PortfolioComponent '),
+      k('implements '),
+      ty('OnInit '),
+      br('{'),
+    ],
+  },
+  { indent: 0, speed: 60, tokens: [] },
+  {
+    indent: 1,
+    speed: 200,
+    tokens: [v('projects '), op('= '), m('signal'), br('<'), ty('Project'), br('[]>('), br('[])')],
+  },
+  { indent: 0, speed: 60, tokens: [] },
+  {
+    indent: 1,
+    speed: 120,
+    tokens: [
+      k('constructor'),
+      br('('),
+      k('private '),
+      v('api'),
+      op(': '),
+      ty('PortfolioService'),
+      br(') {}'),
+    ],
+  },
+  { indent: 0, speed: 60, tokens: [] },
+  { indent: 1, speed: 140, tokens: [m('ngOnInit'), br('(): '), k('void '), br('{')] },
+  {
+    indent: 2,
+    speed: 200,
+    tokens: [
+      k('this'),
+      op('.'),
+      v('api'),
+      op('.'),
+      m('getProjects'),
+      br('()'),
+      op('.'),
+      m('subscribe'),
+      br('('),
+    ],
+  },
+  {
+    indent: 3,
+    speed: 220,
+    tokens: [
+      v('data'),
+      op(' => '),
+      k('this'),
+      op('.'),
+      v('projects'),
+      op('.'),
+      m('set'),
+      br('('),
+      v('data'),
+      br(')'),
+    ],
+  },
+  { indent: 2, speed: 140, tokens: [br(');')] },
+  { indent: 1, speed: 80, tokens: [br('}')] },
+  { indent: 0, speed: 80, tokens: [br('}')] },
+];
+
+const TABS: Tab[] = [
+  { filename: 'PortfolioController.java', lang: 'Java', lines: JAVA_LINES },
+  { filename: 'portfolio.component.ts', lang: 'TypeScript', lines: TS_LINES },
+];
 
 @Component({
   selector: 'app-code-snippet',
@@ -13,62 +222,116 @@ interface CodeLine {
   imports: [CommonModule],
   template: `
     <div
-      class="relative z-10 bg-linear-to-br from-slate-900 to-slate-800 p-6 md:p-8 rounded-2xl border border-slate-700/50 shadow-2xl shadow-emerald-500/10 card-3d hover:shadow-emerald-500/20 transition-all duration-500"
+      #card
+      class="relative z-10 rounded-2xl border shadow-2xl overflow-hidden"
+      style="background:#0d1117; border-color:rgba(255,255,255,0.07); box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.06);"
     >
-      <!-- Window Controls + Filename -->
-      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-700/50">
-        <div class="flex items-center gap-2">
-          <div
-            class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors cursor-pointer"
-          ></div>
-          <div
-            class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors cursor-pointer"
-          ></div>
-          <div
-            class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-colors cursor-pointer"
-          ></div>
-        </div>
-        <div class="flex items-center gap-2 text-slate-400 text-xs">
-          <span class="text-emerald-400">●</span>
-          <span>MigatteProfile.java</span>
-        </div>
-      </div>
-
-      <!-- Animated Code -->
-      <div class="font-mono text-xs md:text-sm space-y-1 min-h-[200px]">
-        @for (line of visibleLines(); track $index) {
-          <div
-            class="flex items-start code-line"
-            [style.padding-left.px]="line.indent * 16"
-            [class.animate-fade-in]="$index === visibleLines().length - 1"
-          >
-            <span class="text-slate-600 select-none w-6 text-right mr-4">{{ $index + 1 }}</span>
-            <span [class]="getTypeClass(line.type)">{{ line.text }}</span>
-          </div>
-        }
-
-        <!-- Typing cursor -->
-        @if (isTyping()) {
-          <div class="flex items-center" [style.padding-left.px]="currentIndent() * 16">
-            <span class="text-slate-600 select-none w-6 text-right mr-4">{{
-              visibleLines().length + 1
-            }}</span>
-            <span class="typing-cursor w-2 h-4 bg-emerald-400 animate-pulse"></span>
-          </div>
-        }
-      </div>
-
-      <!-- Status Badge -->
+      <!-- ① Window chrome -->
       <div
-        class="absolute -bottom-4 -right-4 bg-linear-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2"
+        class="flex items-center gap-2 px-4 py-2.5 border-b"
+        style="background:#161b22; border-color:rgba(255,255,255,0.06);"
       >
-        <span class="relative flex h-2 w-2">
-          <span
-            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"
-          ></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-        </span>
-        <span class="font-bold text-sm">{{ statusText() }}</span>
+        <span class="w-3 h-3 rounded-full" style="background:#ff5f57;"></span>
+        <span class="w-3 h-3 rounded-full" style="background:#febc2e;"></span>
+        <span class="w-3 h-3 rounded-full" style="background:#28c840;"></span>
+
+        <!-- ② Tab bar -->
+        <div class="flex ml-3 gap-1">
+          @for (tab of TABS; track tab.filename; let i = $index) {
+            <button
+              class="px-3 py-1 rounded-t text-xs font-mono transition-all duration-200"
+              [style.background]="activeTab() === i ? '#0d1117' : 'transparent'"
+              [style.color]="activeTab() === i ? '#fafafa' : 'rgba(107,114,128,0.6)'"
+              [style.border]="
+                activeTab() === i ? '1px solid rgba(255,255,255,0.07)' : '1px solid transparent'
+              "
+              [style.border-bottom]="
+                activeTab() === i ? '1px solid #0d1117' : '1px solid transparent'
+              "
+            >
+              <span [style.color]="activeTab() === i ? tabColor(tab.lang) : 'inherit'">●</span>
+              &nbsp;{{ tab.filename }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- ③ Editor body + Minimap -->
+      <div class="flex" style="min-height: 240px;">
+        <!-- Code area -->
+        <div #codeArea class="flex-1 p-5 font-mono text-xs leading-6 overflow-hidden">
+          @for (line of visibleLines(); track $index; let i = $index) {
+            <div
+              class="code-line flex items-start gap-3 rounded px-1 transition-colors duration-150"
+              [style.background]="
+                i === visibleLines().length - 1 && isTyping()
+                  ? 'rgba(16,185,129,0.04)'
+                  : 'transparent'
+              "
+            >
+              <!-- Line number -->
+              <span
+                class="select-none text-right shrink-0 w-5 tabular-nums"
+                style="color: rgba(48,54,61,0.9); font-size:0.65rem; padding-top:1px;"
+                >{{ i + 1 }}</span
+              >
+
+              <!-- Indentation + tokens -->
+              <span
+                class="flex-1 flex flex-wrap items-center min-h-[1.5rem]"
+                [style.padding-left.ch]="line.indent * 2"
+              >
+                @for (tok of line.tokens; track $index) {
+                  <span [class]="tokenClass(tok.t)">{{ tok.text }}</span>
+                }
+                <!-- Cursor on last line -->
+                @if (i === visibleLines().length - 1 && isTyping()) {
+                  <span class="cursor-ibeam ml-0.5">▌</span>
+                }
+              </span>
+            </div>
+          }
+        </div>
+
+        <!-- ④ Minimap -->
+        <div class="w-14 py-5 pr-2 opacity-20 shrink-0 overflow-hidden">
+          @for (line of visibleLines(); track $index) {
+            <div class="flex gap-0.5 mb-px items-center" [style.padding-left.px]="line.indent * 3">
+              @for (tok of minimapTokens(line); track $index) {
+                <div
+                  class="h-1.5 rounded-sm"
+                  [style.width.px]="tok.w"
+                  [style.background]="tok.color"
+                ></div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- ⑤ Status bar -->
+      <div
+        class="flex items-center justify-between px-4 py-1.5 border-t"
+        style="background:#161b22; border-color:rgba(255,255,255,0.05);"
+      >
+        <div class="flex items-center gap-3 text-xs font-mono" style="color:rgba(107,114,128,0.7);">
+          <span class="relative flex h-1.5 w-1.5">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60"
+              style="background:#10b981;"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-1.5 w-1.5"
+              style="background:#10b981;"
+            ></span>
+          </span>
+          <span [style.color]="statusColor()">{{ statusText() }}</span>
+        </div>
+        <div class="flex items-center gap-3 text-xs font-mono" style="color:rgba(107,114,128,0.5);">
+          <span>{{ activeLang() }}</span>
+          <span>UTF-8</span>
+          <span>Ln {{ visibleLines().length }}</span>
+        </div>
       </div>
     </div>
   `,
@@ -77,124 +340,187 @@ interface CodeLine {
       :host {
         display: block;
       }
-      .card-3d {
-        transform-style: preserve-3d;
-      }
-      .code-line {
-        transition: all 0.3s ease;
-      }
-      .code-line:hover {
-        background: rgba(255, 255, 255, 0.02);
-      }
-      .animate-fade-in {
-        animation: fadeSlideIn 0.3s ease-out;
-      }
-      @keyframes fadeSlideIn {
-        from {
-          opacity: 0;
-          transform: translateY(-5px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .typing-cursor {
-        animation: blink 0.8s infinite;
+
+      .cursor-ibeam {
+        color: #10b981;
+        animation: blink 0.85s step-end infinite;
       }
       @keyframes blink {
         0%,
-        50% {
+        100% {
           opacity: 1;
         }
-        51%,
-        100% {
+        50% {
           opacity: 0;
         }
+      }
+
+      /* Token colors — VS Code Dark+ */
+      .t-annotation {
+        color: #ffa657;
+      }
+      .t-keyword {
+        color: #ff7b72;
+      }
+      .t-type {
+        color: #79c0ff;
+      }
+      .t-method {
+        color: #d2a8ff;
+      }
+      .t-string {
+        color: #a5d6ff;
+      }
+      .t-comment {
+        color: #6e7681;
+        font-style: italic;
+      }
+      .t-bracket {
+        color: #8b949e;
+      }
+      .t-variable {
+        color: #ffa657;
+      }
+      .t-number {
+        color: #79c0ff;
+      }
+      .t-operator {
+        color: #ff7b72;
+      }
+      .t-plain {
+        color: #e6edf3;
       }
     `,
   ],
 })
 export class CodeSnippetComponent implements OnInit, OnDestroy {
-  private intervalId: any;
-  private currentLineIndex = 0;
+  @ViewChild('card') cardRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('codeArea') codeAreaRef!: ElementRef<HTMLDivElement>;
+
+  TABS = TABS;
 
   visibleLines = signal<CodeLine[]>([]);
   isTyping = signal(true);
-  currentIndent = signal(0);
-  statusText = signal('Compiling...');
+  activeTab = signal(0);
+  statusText = signal('Initializing...');
+  statusColor = signal('#6b7280');
+  activeLang = signal(TABS[0].lang);
 
-  private allLines: CodeLine[] = [
-    { text: '@Service', indent: 0, type: 'annotation' },
-    { text: 'public class MigatteProfile {', indent: 0, type: 'keyword' },
-    { text: '', indent: 0, type: 'bracket' },
-    { text: 'String role = "Full Stack Dev";', indent: 1, type: 'string' },
-    { text: 'String[] stack = {"Java", "Angular"};', indent: 1, type: 'string' },
-    { text: '', indent: 0, type: 'bracket' },
-    { text: 'public void buildFuture() {', indent: 1, type: 'method' },
-    { text: '// Transformando ideas en código', indent: 2, type: 'comment' },
-    { text: 'this.learn().code().deploy();', indent: 2, type: 'method' },
-    { text: '}', indent: 1, type: 'bracket' },
-    { text: '}', indent: 0, type: 'bracket' },
-  ];
+  private timeouts: ReturnType<typeof setTimeout>[] = [];
+  private currentTabIdx = 0;
 
   ngOnInit() {
-    this.startTypingAnimation();
+    this.startTab(0);
   }
 
   ngOnDestroy() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
+    this.timeouts.forEach((t) => clearTimeout(t));
   }
 
-  private startTypingAnimation() {
-    // Small delay before starting
-    setTimeout(() => {
-      this.intervalId = setInterval(() => {
-        if (this.currentLineIndex < this.allLines.length) {
-          const nextLine = this.allLines[this.currentLineIndex];
-          this.currentIndent.set(nextLine.indent);
-          this.visibleLines.update((lines) => [...lines, nextLine]);
-          this.currentLineIndex++;
-
-          // Update status based on progress
-          if (this.currentLineIndex === 4) {
-            this.statusText.set('Building...');
-          } else if (this.currentLineIndex === 7) {
-            this.statusText.set('Almost done...');
-          }
-        } else {
-          this.isTyping.set(false);
-          this.statusText.set('Ready! 🚀');
-          clearInterval(this.intervalId);
-
-          // Restart animation after a pause
-          setTimeout(() => this.restartAnimation(), 5000);
-        }
-      }, 400);
-    }, 1000);
+  // ─── Token class helper ─────────────────────────────────────────────────────
+  tokenClass(t: TType): string {
+    return `t-${t}`;
   }
 
-  private restartAnimation() {
-    this.currentLineIndex = 0;
+  tabColor(lang: string): string {
+    return lang === 'Java' ? '#f97316' : '#3b82f6';
+  }
+
+  // ─── Minimap tokens ─────────────────────────────────────────────────────────
+  minimapTokens(line: CodeLine): { w: number; color: string }[] {
+    const colorMap: Record<TType, string> = {
+      annotation: '#ffa657',
+      keyword: '#ff7b72',
+      type: '#79c0ff',
+      method: '#d2a8ff',
+      string: '#a5d6ff',
+      comment: '#6e7681',
+      bracket: '#4b5563',
+      variable: '#ffa657',
+      number: '#79c0ff',
+      operator: '#ff7b72',
+      plain: '#e6edf3',
+    };
+    return line.tokens.map((tok) => ({
+      w: Math.max(4, Math.min(tok.text.length * 1.4, 18)),
+      color: colorMap[tok.t],
+    }));
+  }
+
+  // ─── Tab lifecycle ───────────────────────────────────────────────────────────
+  private startTab(tabIdx: number) {
+    this.currentTabIdx = tabIdx;
+    this.activeTab.set(tabIdx);
+    this.activeLang.set(TABS[tabIdx].lang);
     this.visibleLines.set([]);
     this.isTyping.set(true);
-    this.statusText.set('Compiling...');
-    this.startTypingAnimation();
+    this.statusText.set('Parsing...');
+    this.statusColor.set('rgba(107,114,128,0.7)');
+
+    const lines = TABS[tabIdx].lines;
+    let cumulativeDelay = 350;
+
+    lines.forEach((line, i) => {
+      const delay = cumulativeDelay;
+      const t = setTimeout(() => {
+        this.visibleLines.update((curr) => [...curr, line]);
+
+        // Status updates
+        const pct = Math.round(((i + 1) / lines.length) * 100);
+        if (pct === 30) {
+          this.statusText.set('Compiling...');
+          this.statusColor.set('#f97316');
+        }
+        if (pct === 60) {
+          this.statusText.set('Building...');
+          this.statusColor.set('#38bdf8');
+        }
+        if (pct === 90) {
+          this.statusText.set('Linking...');
+          this.statusColor.set('#a78bfa');
+        }
+      }, delay);
+      this.timeouts.push(t);
+
+      cumulativeDelay += line.speed ?? 300;
+    });
+
+    // Done
+    const doneDelay = cumulativeDelay + 100;
+    const td = setTimeout(() => {
+      this.isTyping.set(false);
+      this.statusText.set(tabIdx === 0 ? 'Build successful ✓' : 'Ready ✓');
+      this.statusColor.set('#10b981');
+
+      // Switch to next tab after pause, with fade
+      const tn = setTimeout(() => this.fadeToNextTab(), 3500);
+      this.timeouts.push(tn);
+    }, doneDelay);
+    this.timeouts.push(td);
   }
 
-  getTypeClass(type: CodeLine['type']): string {
-    const classes: Record<string, string> = {
-      keyword: 'text-purple-400 font-semibold',
-      class: 'text-yellow-300 font-bold',
-      type: 'text-cyan-400',
-      string: 'text-emerald-400',
-      comment: 'text-slate-500 italic',
-      method: 'text-blue-400',
-      bracket: 'text-slate-400',
-      annotation: 'text-yellow-500',
-    };
-    return classes[type] || 'text-slate-300';
+  private fadeToNextTab() {
+    const nextIdx = (this.currentTabIdx + 1) % TABS.length;
+
+    // GSAP fade out code area
+    if (this.codeAreaRef) {
+      gsap.to(this.codeAreaRef.nativeElement, {
+        opacity: 0,
+        y: -8,
+        duration: 0.4,
+        ease: 'power2.in',
+        onComplete: () => {
+          gsap.to(this.codeAreaRef.nativeElement, {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+          this.startTab(nextIdx);
+        },
+      });
+    } else {
+      this.startTab(nextIdx);
+    }
   }
 }
