@@ -1,11 +1,21 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnDestroy,
+  AfterViewInit,
+  PLATFORM_ID,
+  inject,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 interface Service {
   title: string;
   description: string;
-  icon: string;
+  icon: string; // Material Symbols Outlined ligature
   features: string[];
+  accent: string; // hex for hover
+  bgAccent: string; // icon bg
 }
 
 @Component({
@@ -14,55 +24,80 @@ interface Service {
   imports: [CommonModule],
   template: `
     <section
-      class="py-24 relative bg-stone-50 dark:bg-stone-900 transition-colors duration-500"
       id="services"
+      #sectionEl
+      class="py-24 relative bg-stone-50 dark:bg-stone-900 transition-colors duration-500 overflow-hidden"
     >
-      <!-- Decorator Blob -->
+      <!-- Ambient glow -->
       <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl -z-10"
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/4 rounded-full blur-3xl -z-10 pointer-events-none"
       ></div>
 
-      <div class="max-w-7xl mx-auto px-6">
-        <!-- Section Header -->
-        <div class="text-center mb-16 md:mb-24">
-          <h2 class="text-3xl md:text-4xl font-bold text-stone-900 mb-6 tracking-tight">
-            Soluciones <span class="text-emerald-600">Tecnológicas</span>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <!-- Header -->
+        <div class="mb-14 service-reveal">
+          <span
+            class="text-emerald-600 dark:text-emerald-400 font-mono font-bold text-xs tracking-widest uppercase mb-3 block"
+          >
+            // Servicios
+          </span>
+          <h2
+            class="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-50 flex items-center gap-4 tracking-tight"
+          >
+            Soluciones <span class="text-emerald-600 dark:text-emerald-400">Tecnológicas</span>
+            <span class="hidden md:block flex-1 h-px bg-stone-200 dark:bg-stone-700"></span>
           </h2>
-          <p class="text-lg md:text-xl text-stone-600 max-w-2xl mx-auto leading-relaxed">
-            Arquitectura de software a medida para potenciar tu negocio.
+          <p class="text-stone-600 dark:text-stone-400 max-w-2xl mt-4 leading-relaxed">
+            Arquitectura de software a medida. Desde el backend hasta el despliegue, construyo
+            soluciones robustas y escalables.
           </p>
         </div>
 
-        <!-- Services Grid -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 place-content-center">
-          <div
-            *ngFor="let service of services"
-            class="gs-reveal-card group p-8 bg-white/50 backdrop-blur-sm border border-stone-100 rounded-2xl hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 hover:-translate-y-1"
-          >
-            <!-- Icon -->
+        <!-- Services Grid (3×2) -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          @for (service of services; track service.title; let i = $index) {
             <div
-              class="w-14 h-14 rounded-xl bg-stone-50 flex items-center justify-center text-2xl mb-6 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors duration-300"
+              class="service-card group p-7 bg-white dark:bg-stone-800/60 border border-stone-100 dark:border-stone-700/50 rounded-2xl hover:border-opacity-60 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-default"
+              [style.transition-delay.ms]="i * 70"
+              [style.--card-accent]="service.accent"
             >
-              {{ service.icon }}
-            </div>
-
-            <!-- Content -->
-            <h3 class="text-xl font-bold text-stone-900 mb-3">{{ service.title }}</h3>
-            <p class="text-stone-600 text-sm leading-relaxed mb-6 min-h-[80px]">
-              {{ service.description }}
-            </p>
-
-            <!-- Features List -->
-            <ul class="space-y-2">
-              <li
-                *ngFor="let feature of service.features"
-                class="flex items-center gap-2 text-xs font-mono text-stone-500"
+              <!-- Icon -->
+              <div
+                class="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110"
+                [style.background]="service.bgAccent"
               >
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                {{ feature }}
-              </li>
-            </ul>
-          </div>
+                <span
+                  class="material-symbols-outlined text-xl leading-none select-none"
+                  [style.color]="service.accent"
+                  style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;"
+                  >{{ service.icon }}</span
+                >
+              </div>
+
+              <!-- Title -->
+              <h3
+                class="text-lg font-bold text-stone-900 dark:text-stone-50 mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-200"
+              >
+                {{ service.title }}
+              </h3>
+
+              <!-- Description -->
+              <p class="text-stone-500 dark:text-stone-400 text-sm leading-relaxed mb-5">
+                {{ service.description }}
+              </p>
+
+              <!-- Feature pills -->
+              <div class="flex flex-wrap gap-1.5">
+                @for (feature of service.features; track feature) {
+                  <span
+                    class="px-2 py-0.5 text-[11px] font-mono rounded-full bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-900/30 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-200"
+                  >
+                    {{ feature }}
+                  </span>
+                }
+              </div>
+            </div>
+          }
         </div>
       </div>
     </section>
@@ -72,50 +107,163 @@ interface Service {
       :host {
         display: block;
       }
+
+      /* Google Material Symbols font class */
+      .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Scroll-triggered reveal */
+      .service-reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .service-reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .service-card {
+        opacity: 0;
+        transform: translateY(16px);
+        transition:
+          opacity 0.5s ease,
+          transform 0.5s ease,
+          border-color 0.3s ease,
+          box-shadow 0.3s ease,
+          translate 0.3s ease;
+      }
+      .service-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .service-card:hover {
+        border-color: color-mix(in srgb, var(--card-accent) 30%, transparent);
+        box-shadow: 0 12px 40px color-mix(in srgb, var(--card-accent) 8%, transparent);
+      }
     `,
   ],
 })
-export class ServicesSectionComponent {
+export class ServicesSectionComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('sectionEl') sectionRef!: ElementRef<HTMLElement>;
+
+  private platformId = inject(PLATFORM_ID);
+  private observer: IntersectionObserver | null = null;
+  private cardObserver: IntersectionObserver | null = null;
+
   services: Service[] = [
     {
-      title: 'Web Development',
+      title: 'Backend APIs',
       description:
-        'Desde sitios web personalizados hasta plataformas complejas. Damos vida a tu visión digital.',
-      icon: '💻',
-      features: ['Landing Pages', 'Corporate Sites', 'SEO Optimization', 'Responsive Design'],
+        'APIs RESTful robustas con Java y Spring Boot. Autenticación JWT, validaciones, manejo de errores y documentación OpenAPI.',
+      icon: 'dns',
+      accent: '#f97316',
+      bgAccent: 'rgba(249,115,22,0.08)',
+      features: ['Spring Boot 3', 'REST / JSON', 'JWT Auth', 'OpenAPI'],
     },
     {
-      title: 'Mobile Apps',
+      title: 'Frontend Angular',
       description:
-        'Llega a tus clientes donde estén con aplicaciones móviles nativas o híbridas de alto rendimiento.',
-      icon: '📱',
-      features: ['iOS & Android', 'React Native / Flutter', 'User Centric UI', 'Offline Mode'],
+        'Aplicaciones SPA modernas con Angular 17+. Componentes standalone, signals, lazy loading y animaciones GSAP.',
+      icon: 'web',
+      accent: '#dd0031',
+      bgAccent: 'rgba(221,0,49,0.08)',
+      features: ['Angular 17+', 'Tailwind CSS', 'GSAP', 'PrimeNG'],
     },
     {
-      title: 'E-commerce',
+      title: 'Arquitectura Full Stack',
       description:
-        'Construye una experiencia de compra fluida y segura. Tiendas online que convierten visitas en ventas.',
-      icon: '🛍️',
-      features: ['Payment Gateways', 'Inventory Management', 'User Dashboard', 'Analytics'],
+        'Diseño e implementación de sistemas end-to-end usando Clean Architecture, separación de capas y patrones SOLID.',
+      icon: 'hub',
+      accent: '#10b981',
+      bgAccent: 'rgba(16,185,129,0.08)',
+      features: ['Clean Arch', 'Microservicios', 'SOLID', 'DDD'],
     },
     {
-      title: 'Custom Apps',
+      title: 'Base de Datos',
       description:
-        'Optimiza tus operaciones comerciales con aplicaciones web a medida adaptadas a tus necesidades.',
-      icon: '⚙️',
-      features: ['SaaS Platforms', 'Internal Tools', 'API Integration', 'Cloud Architecture'],
+        'Diseño de esquemas, optimización de queries y migraciones con PostgreSQL y SQL Server. Estrategias de indexación y rendimiento.',
+      icon: 'database',
+      accent: '#38bdf8',
+      bgAccent: 'rgba(56,189,248,0.08)',
+      features: ['PostgreSQL', 'SQL Server', 'JPA / Hibernate', 'Migrations'],
     },
     {
-      title: 'Motion UI & GSAP',
+      title: 'DevOps & Despliegue',
       description:
-        'Experiencias inmersivas con animaciones de alto rendimiento que cautivan y retienen a tus usuarios.',
-      icon: '✨',
-      features: [
-        'Scroll Animations',
-        'Interactive Storytelling',
-        'Micro-interactions',
-        'Performance First',
-      ],
+        'Contenedores Docker, pipelines CI/CD y despliegue en AWS. Automatización desde el commit hasta producción.',
+      icon: 'rocket_launch',
+      accent: '#a78bfa',
+      bgAccent: 'rgba(167,139,250,0.08)',
+      features: ['Docker', 'GitHub Actions', 'AWS EC2/S3', 'CI/CD'],
+    },
+    {
+      title: 'Consultoría Técnica',
+      description:
+        'Revisión de arquitectura, refactor de código legado y mejoras de rendimiento. Análisis técnico orientado a resultados.',
+      icon: 'engineering',
+      accent: '#14b8a6',
+      bgAccent: 'rgba(20,184,166,0.08)',
+      features: ['Code Review', 'Refactoring', 'Performance', 'Tech Debt'],
     },
   ];
+
+  ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.setupObservers();
+  }
+
+  ngOnDestroy() {
+    this.observer?.disconnect();
+    this.cardObserver?.disconnect();
+  }
+
+  private setupObservers() {
+    // Header reveal
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible');
+          this.observer?.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' },
+    );
+
+    // Card stagger reveal
+    this.cardObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible');
+          this.cardObserver?.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
+    );
+
+    requestAnimationFrame(() => {
+      document.querySelectorAll('#services .service-reveal').forEach((el) => {
+        this.observer?.observe(el);
+      });
+      document.querySelectorAll('#services .service-card').forEach((el) => {
+        this.cardObserver?.observe(el);
+      });
+    });
+  }
 }

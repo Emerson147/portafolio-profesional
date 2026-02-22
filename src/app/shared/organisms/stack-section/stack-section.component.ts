@@ -2,7 +2,6 @@ import {
   Component,
   inject,
   signal,
-  OnInit,
   OnDestroy,
   PLATFORM_ID,
   ElementRef,
@@ -11,7 +10,6 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { GsapService } from '../../../core/services/gsap.service';
 import { ICONS, TECH_ICONS } from '../../../core/data/icons.data';
 
 interface TechItem {
@@ -163,14 +161,19 @@ interface TechCategory {
         </div>
 
         <!-- Featured Tags with micro icons -->
-        <div class="flex flex-wrap justify-center gap-3 mt-12 pt-8 border-t border-white/10 stack-reveal">
+        <div
+          class="flex flex-wrap justify-center gap-3 mt-12 pt-8 border-t border-white/10 stack-reveal"
+        >
           <span class="text-slate-500 text-sm self-center">Destacados:</span>
           @for (tech of featuredTechs; track tech; let i = $index) {
             <span
               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/8 border border-emerald-500/20 rounded-full text-emerald-400 text-sm font-mono hover:bg-emerald-500/15 hover:border-emerald-500/40 hover:scale-105 transition-all duration-200 cursor-default"
             >
               @if (getFeaturedIcon(tech)) {
-                <span class="w-3.5 h-3.5 opacity-75" [innerHTML]="getSafeTechIcon(getFeaturedIcon(tech)!)"></span>
+                <span
+                  class="w-3.5 h-3.5 opacity-75"
+                  [innerHTML]="getSafeTechIcon(getFeaturedIcon(tech)!)"
+                ></span>
               }
               {{ tech }}
             </span>
@@ -241,11 +244,10 @@ interface TechCategory {
     `,
   ],
 })
-export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
+export class StackSectionComponent implements OnDestroy, AfterViewInit {
   @ViewChild('sectionEl') sectionRef!: ElementRef<HTMLElement>;
 
   private platformId = inject(PLATFORM_ID);
-  private gsap = inject(GsapService);
   private sanitizer = inject(DomSanitizer);
 
   private observer: IntersectionObserver | null = null;
@@ -258,9 +260,9 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: 'database',
       accentColor: '#f97316', // Java orange
       items: [
-        { name: 'Java 17/21', level: 'Avanzado', years: 4, iconKey: 'Java' },
-        { name: 'Spring Boot 3', level: 'Avanzado', years: 3, iconKey: 'Spring Boot' },
-        { name: 'PostgreSQL', level: 'Avanzado', years: 3, iconKey: 'PostgreSQL' },
+        { name: 'Java 17/21', level: 'Avanzado', years: 2, iconKey: 'Java' },
+        { name: 'Spring Boot 3', level: 'Avanzado', years: 2, iconKey: 'Spring Boot' },
+        { name: 'PostgreSQL', level: 'Avanzado', years: 2, iconKey: 'PostgreSQL' },
         { name: 'Docker', level: 'Intermedio', years: 2, iconKey: 'Docker' },
       ],
     },
@@ -270,10 +272,10 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: 'layers',
       accentColor: '#dd0031', // Angular red
       items: [
-        { name: 'Angular 17+', level: 'Avanzado', years: 3, iconKey: 'Angular' },
+        { name: 'Angular 17+', level: 'Avanzado', years: 2, iconKey: 'Angular' },
         { name: 'Tailwind CSS', level: 'Avanzado', years: 2, iconKey: 'Tailwind' },
         { name: 'PrimeNG', level: 'Intermedio', years: 2, iconKey: 'PrimeNG' },
-        { name: 'Astro', level: 'Aprendiendo', years: 1 },
+        { name: 'Astro', level: 'Aprendiendo', years: 1, iconKey: 'Astro' },
       ],
     },
     {
@@ -282,10 +284,10 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: 'cloud',
       accentColor: '#38bdf8', // AWS/cloud blue
       items: [
-        { name: 'AWS', level: 'Intermedio', years: 2 },
-        { name: 'CI/CD', level: 'Intermedio', years: 2 },
-        { name: 'Git/GitHub', level: 'Avanzado', years: 4 },
-        { name: 'Linux', level: 'Intermedio', years: 3 },
+        { name: 'AWS', level: 'Intermedio', years: 2, iconKey: 'AWS' },
+        { name: 'CI/CD', level: 'Intermedio', years: 2, iconKey: 'Git' },
+        { name: 'Git/GitHub', level: 'Avanzado', years: 2, iconKey: 'Git' },
+        { name: 'Linux', level: 'Intermedio', years: 2, iconKey: 'Linux' },
       ],
     },
     {
@@ -294,10 +296,10 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: 'gitBranch',
       accentColor: '#a78bfa', // purple
       items: [
-        { name: 'Scrum', level: 'Avanzado', years: 3 },
-        { name: 'Clean Arch', level: 'Intermedio', years: 2 },
-        { name: 'REST APIs', level: 'Avanzado', years: 4 },
-        { name: 'Git Flow', level: 'Avanzado', years: 4 },
+        { name: 'Scrum', level: 'Avanzado', years: 2, iconKey: 'Scrum' },
+        { name: 'Clean Arch', level: 'Intermedio', years: 2, iconKey: 'Clean Arch' },
+        { name: 'REST APIs', level: 'Avanzado', years: 2, iconKey: 'REST APIs' },
+        { name: 'Git Flow', level: 'Avanzado', years: 2, iconKey: 'Git Flow' },
       ],
     },
   ];
@@ -307,9 +309,9 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
   // Map featured tag label → TECH_ICONS key
   private featuredIconMap: Partial<Record<string, keyof typeof TECH_ICONS>> = {
     'Spring Boot': 'Spring Boot',
-    'Angular':     'Angular',
-    'Docker':      'Docker',
-    'PostgreSQL':  'PostgreSQL',
+    Angular: 'Angular',
+    Docker: 'Docker',
+    PostgreSQL: 'PostgreSQL',
   };
 
   getFeaturedIcon(tech: string): keyof typeof TECH_ICONS | null {
@@ -317,7 +319,7 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   animatedStats = signal([
-    { value: '4+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 4, suffix: '+' },
+    { value: '2+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 2, suffix: '+' },
     {
       value: '15+',
       label: 'Tecnologías',
@@ -335,8 +337,6 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
       suffix: '',
     },
   ]);
-
-  ngOnInit() {}
 
   ngAfterViewInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -445,11 +445,11 @@ export class StackSectionComponent implements OnInit, OnDestroy, AfterViewInit {
   onCardTilt(event: MouseEvent) {
     if (window.matchMedia('(pointer: coarse)').matches) return;
     const card = event.currentTarget as HTMLElement;
-    const rect  = card.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width  - 0.5;  // -0.5 → 0.5
-    const y = (event.clientY - rect.top)  / rect.height - 0.5;
-    const tiltX =  y * -6;   // tilt up when cursor at top
-    const tiltY =  x *  6;
+    const rect = card.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5; // -0.5 → 0.5
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    const tiltX = y * -6; // tilt up when cursor at top
+    const tiltY = x * 6;
     card.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(4px)`;
     card.style.transition = 'transform 0.08s ease';
   }
