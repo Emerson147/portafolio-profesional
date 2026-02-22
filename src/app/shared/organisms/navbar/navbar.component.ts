@@ -31,11 +31,17 @@ import { TranslateService } from '../../../core/services/translate.service';
           : 'bg-transparent py-8')
       "
     >
-      <!-- Grid Pattern on Scroll -->
+      <!-- Grid Pattern on Scroll (light) -->
       <div
-        class="absolute inset-0 opacity-[0.03] pointer-events-none transition-opacity duration-500"
-        [class.opacity-0]="!isScrolled()"
+        class="absolute inset-0 opacity-[0.03] dark:opacity-0 pointer-events-none transition-opacity duration-500"
+        [class.!opacity-0]="!isScrolled()"
         style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px;"
+      ></div>
+      <!-- Grid Pattern on Scroll (dark) -->
+      <div
+        class="absolute inset-0 opacity-0 dark:opacity-[0.06] pointer-events-none transition-opacity duration-500"
+        [class.!opacity-0]="!isScrolled()"
+        style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"
       ></div>
 
       <div class="max-w-7xl mx-auto px-6 flex justify-between items-center relative z-10">
@@ -47,7 +53,7 @@ import { TranslateService } from '../../../core/services/translate.service';
         </div>
 
         <!-- Desktop Nav -->
-        <div class="hidden md:flex gap-10 items-center">
+        <div class="hidden md:flex gap-6 lg:gap-8 items-center">
           @for (item of navigation; track item.name) {
             @if (item.type === 'route') {
               <a
@@ -179,8 +185,12 @@ import { TranslateService } from '../../../core/services/translate.service';
         >
           <!-- Grid Pattern for Mobile Menu -->
           <div
-            class="absolute inset-0 opacity-[0.03] pointer-events-none"
+            class="absolute inset-0 opacity-[0.03] dark:opacity-0 pointer-events-none"
             style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px;"
+          ></div>
+          <div
+            class="absolute inset-0 opacity-0 dark:opacity-[0.06] pointer-events-none"
+            style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"
           ></div>
 
           <div class="relative z-10 flex flex-col gap-6">

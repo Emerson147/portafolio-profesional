@@ -8,11 +8,11 @@ import { GsapService } from '../../../core/services/gsap.service';
     <a
       [href]="href"
       (click)="onLinkClick($event)"
-      class="text-sm font-medium text-stone-500 hover:text-emerald-700 transition-colors relative group tracking-wide cursor-pointer"
+      class="text-sm font-mono text-stone-600 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors relative group tracking-wide cursor-pointer"
     >
       {{ label }}
       <span
-        class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:w-full"
+        class="absolute -bottom-1.5 left-0 w-0 h-px bg-emerald-500 dark:bg-emerald-400 transition-all duration-300 group-hover:w-full"
       ></span>
     </a>
   `,
