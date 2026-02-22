@@ -1,4 +1,4 @@
-import{k as i}from"./chunk-KHWL3JQL.js";var s=[{slug:"arquitectura-microservicios-spring-boot",title:"Arquitectura de Microservicios con Spring Boot",excerpt:"C\xF3mo dise\xF1ar, implementar y desplegar microservicios robustos con Spring Boot, Docker y un API Gateway. Lecciones aprendidas en producci\xF3n.",status:"evergreen",tags:["Java","Spring Boot","Microservicios","Docker"],date:"2025-01-15",readTime:12,coverEmoji:"\u2615",content:`
+import{k as i}from"./chunk-QWUFUVFB.js";var s=[{slug:"arquitectura-microservicios-spring-boot",title:"Arquitectura de Microservicios con Spring Boot",excerpt:"C\xF3mo dise\xF1ar, implementar y desplegar microservicios robustos con Spring Boot, Docker y un API Gateway. Lecciones aprendidas en producci\xF3n.",status:"evergreen",tags:["Java","Spring Boot","Microservicios","Docker"],date:"2025-01-15",readTime:12,coverEmoji:"\u2615",content:`
 ## \xBFPor qu\xE9 Microservicios?
 
 Cuando un monolito crece m\xE1s all\xE1 de cierto punto, el costo de cada cambio se dispara. Los microservicios resuelven esto dividiendo la aplicaci\xF3n en servicios peque\xF1os, independientes y desplegables por separado.
