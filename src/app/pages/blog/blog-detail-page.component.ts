@@ -1,6 +1,16 @@
-import { Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  OnInit,
+  OnDestroy,
+  PLATFORM_ID,
+  AfterViewInit,
+  HostListener,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BlogService } from '../../core/services/blog.service';
@@ -13,14 +23,26 @@ import { MarkdownService } from '../../core/services/markdown.service';
   imports: [CommonModule, RouterLink],
   template: `
     <div class="min-h-screen bg-white dark:bg-stone-950 transition-colors duration-500">
+      <!-- Reading Progress Bar -->
+      <div
+        class="fixed top-0 left-0 h-[3px] bg-linear-to-r from-emerald-500 to-teal-400 z-60 transition-[width] duration-150 ease-out"
+        [style.width.%]="readingProgress()"
+      ></div>
+
       @if (post()) {
         <!-- Hero -->
         <header
           class="pt-32 pb-16 px-6 relative overflow-hidden border-b border-stone-100 dark:border-stone-800"
         >
+          <!-- Dot grid (light) -->
           <div
-            class="absolute inset-0 opacity-[0.02] pointer-events-none"
+            class="absolute inset-0 opacity-[0.02] dark:opacity-0 pointer-events-none"
             style="background-image: radial-gradient(circle at 1px 1px, #000 1px, transparent 0); background-size: 40px 40px;"
+          ></div>
+          <!-- Dot grid (dark) -->
+          <div
+            class="absolute inset-0 opacity-0 dark:opacity-[0.04] pointer-events-none"
+            style="background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0); background-size: 40px 40px;"
           ></div>
 
           <div class="max-w-3xl mx-auto relative z-10">
@@ -46,7 +68,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
             </nav>
 
             <!-- Status + Read time -->
-            <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-4 mb-6 flex-wrap">
               <span
                 class="flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full border"
                 [class]="getStatusClass(post()!.status)"
@@ -152,6 +174,24 @@ import { MarkdownService } from '../../core/services/markdown.service';
             }
           </div>
         </main>
+
+        <!-- Scroll to Top -->
+        @if (showScrollTop()) {
+          <button
+            (click)="scrollToTop()"
+            class="fixed bottom-8 right-8 z-50 w-11 h-11 flex items-center justify-center rounded-full bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 shadow-lg hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-all duration-300 active:scale-90"
+            aria-label="Volver arriba"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 15l7-7 7 7"
+              />
+            </svg>
+          </button>
+        }
       } @else if (notFound()) {
         <!-- 404 -->
         <div class="flex flex-col items-center justify-center min-h-screen text-center px-6">
@@ -180,12 +220,12 @@ import { MarkdownService } from '../../core/services/markdown.service';
 
       /* Zen prose styles */
       :host ::ng-deep .prose-zen {
-        color: #44403c; /* stone-700 */
+        color: #44403c;
         line-height: 1.8;
         font-size: 1rem;
       }
       :host ::ng-deep .dark .prose-zen {
-        color: #a8a29e; /* stone-400 */
+        color: #a8a29e;
       }
       :host ::ng-deep .prose-zen h2 {
         font-size: 1.5rem;
@@ -197,8 +237,18 @@ import { MarkdownService } from '../../core/services/markdown.service';
         border-bottom: 2px solid #e7e5e4;
       }
       :host ::ng-deep .dark .prose-zen h2 {
-        color: #f5f5f4;
+        color: #fafaf9;
         border-bottom-color: #292524;
+      }
+      :host ::ng-deep .prose-zen h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1c1917;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+      }
+      :host ::ng-deep .dark .prose-zen h3 {
+        color: #e7e5e4;
       }
       :host ::ng-deep .prose-zen p {
         margin-bottom: 1.25rem;
@@ -208,6 +258,12 @@ import { MarkdownService } from '../../core/services/markdown.service';
         margin-bottom: 1.25rem;
         padding-left: 1.5rem;
       }
+      :host ::ng-deep .prose-zen ul {
+        list-style-type: disc;
+      }
+      :host ::ng-deep .prose-zen ol {
+        list-style-type: decimal;
+      }
       :host ::ng-deep .prose-zen li {
         margin-bottom: 0.5rem;
       }
@@ -216,15 +272,16 @@ import { MarkdownService } from '../../core/services/markdown.service';
         font-weight: 700;
       }
       :host ::ng-deep .dark .prose-zen strong {
-        color: #f5f5f4;
+        color: #fafaf9;
       }
       :host ::ng-deep .prose-zen code {
-        font-family: 'Courier New', monospace;
-        font-size: 0.875rem;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-size: 0.85rem;
         background: #f5f5f4;
         color: #059669;
-        padding: 0.125rem 0.375rem;
+        padding: 0.15rem 0.4rem;
         border-radius: 0.25rem;
+        word-break: break-word;
       }
       :host ::ng-deep .dark .prose-zen code {
         background: #292524;
@@ -232,18 +289,24 @@ import { MarkdownService } from '../../core/services/markdown.service';
       }
       :host ::ng-deep .prose-zen pre {
         background: #1c1917;
-        color: #e7e5e4;
+        color: #d6d3d1;
         padding: 1.25rem;
         border-radius: 0.75rem;
         overflow-x: auto;
         margin-bottom: 1.5rem;
         font-size: 0.8rem;
         line-height: 1.7;
+        border: 1px solid #292524;
+      }
+      :host ::ng-deep .dark .prose-zen pre {
+        background: #0c0a09;
+        border-color: #1c1917;
       }
       :host ::ng-deep .prose-zen pre code {
         background: transparent;
         color: inherit;
         padding: 0;
+        font-size: inherit;
       }
       :host ::ng-deep .prose-zen blockquote {
         border-left: 3px solid #10b981;
@@ -255,6 +318,46 @@ import { MarkdownService } from '../../core/services/markdown.service';
       :host ::ng-deep .dark .prose-zen blockquote {
         color: #a8a29e;
       }
+      :host ::ng-deep .prose-zen a {
+        color: #059669;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      :host ::ng-deep .dark .prose-zen a {
+        color: #34d399;
+      }
+      :host ::ng-deep .prose-zen table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+      }
+      :host ::ng-deep .prose-zen th {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 2px solid #d6d3d1;
+        font-weight: 700;
+        color: #1c1917;
+      }
+      :host ::ng-deep .dark .prose-zen th {
+        border-bottom-color: #44403c;
+        color: #fafaf9;
+      }
+      :host ::ng-deep .prose-zen td {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid #e7e5e4;
+      }
+      :host ::ng-deep .dark .prose-zen td {
+        border-bottom-color: #292524;
+      }
+      :host ::ng-deep .prose-zen hr {
+        border: none;
+        border-top: 1px solid #e7e5e4;
+        margin: 2rem 0;
+      }
+      :host ::ng-deep .dark .prose-zen hr {
+        border-top-color: #292524;
+      }
     `,
   ],
 })
@@ -264,11 +367,15 @@ export class BlogDetailPageComponent implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private markdownService = inject(MarkdownService);
   private platformId = inject(PLATFORM_ID);
+  private meta = inject(Meta);
+  private titleService = inject(Title);
 
   post = signal<BlogPost | null>(null);
   notFound = signal(false);
   safeContent = signal<SafeHtml>('');
   relatedPosts = signal<BlogPost[]>([]);
+  readingProgress = signal(0);
+  showScrollTop = signal(false);
   private paramSub?: Subscription;
 
   ngOnInit() {
@@ -280,6 +387,25 @@ export class BlogDetailPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.paramSub?.unsubscribe();
+  }
+
+  @HostListener('window:scroll')
+  onScroll() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    // Reading progress
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = window.scrollY;
+    this.readingProgress.set(docHeight > 0 ? Math.min((scrolled / docHeight) * 100, 100) : 0);
+
+    // Scroll to top visibility
+    this.showScrollTop.set(scrolled > 600);
+  }
+
+  scrollToTop() {
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   private loadPost(slug: string | null) {
@@ -295,11 +421,19 @@ export class BlogDetailPageComponent implements OnInit, OnDestroy {
     }
 
     this.post.set(found);
-    // Parse Markdown → HTML, then sanitize for safe rendering
+
+    // SEO meta tags
+    this.titleService.setTitle(`${found.title} — MigatteDev`);
+    this.meta.updateTag({ name: 'description', content: found.excerpt });
+    this.meta.updateTag({ property: 'og:title', content: found.title });
+    this.meta.updateTag({ property: 'og:description', content: found.excerpt });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+
+    // Parse Markdown → HTML
     const html = this.markdownService.parse(found.content);
     this.safeContent.set(this.sanitizer.bypassSecurityTrustHtml(html));
 
-    // Related posts: same tags, exclude current
+    // Related posts
     const related = this.blogService
       .getAll()
       .filter((p) => p.slug !== slug && p.tags.some((t) => found.tags.includes(t)))

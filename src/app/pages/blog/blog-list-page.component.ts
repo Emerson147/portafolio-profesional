@@ -12,10 +12,15 @@ import { BlogPost } from '../../core/data/blog.data';
     <div class="min-h-screen bg-white dark:bg-stone-950 transition-colors duration-500">
       <!-- Header -->
       <header class="pt-32 pb-16 px-6 relative overflow-hidden">
-        <!-- Subtle grid pattern -->
+        <!-- Dot grid (light) -->
         <div
-          class="absolute inset-0 opacity-[0.02] pointer-events-none"
+          class="absolute inset-0 opacity-[0.02] dark:opacity-0 pointer-events-none"
           style="background-image: radial-gradient(circle at 1px 1px, #000 1px, transparent 0); background-size: 40px 40px;"
+        ></div>
+        <!-- Dot grid (dark) -->
+        <div
+          class="absolute inset-0 opacity-0 dark:opacity-[0.04] pointer-events-none"
+          style="background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0); background-size: 40px 40px;"
         ></div>
 
         <div class="max-w-5xl mx-auto relative z-10">
@@ -57,7 +62,7 @@ import { BlogPost } from '../../core/data/blog.data';
                   >Reflexiones</span
                 >
               </h1>
-              <p class="mt-4 text-stone-500 dark:text-stone-400 max-w-xl">
+              <p class="mt-4 text-stone-500 dark:text-stone-400 max-w-xl leading-relaxed">
                 Un espacio donde cultivo ideas sobre desarrollo de software, arquitectura y
                 aprendizajes del mundo real. Los artículos crecen con el tiempo.
               </p>
@@ -227,9 +232,7 @@ import { BlogPost } from '../../core/data/blog.data';
             </div>
 
             <p class="text-center text-xs font-mono text-stone-400 dark:text-stone-600 mt-12">
-              // {{ filteredPosts().length }} artículo{{
-                filteredPosts().length !== 1 ? 's' : ''
-              }}
+              // {{ filteredPosts().length }} artículo{{ filteredPosts().length !== 1 ? 's' : '' }}
               en el jardín
             </p>
           }
