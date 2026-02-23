@@ -33,8 +33,7 @@ import { TranslateService } from '../../../core/services/translate.service';
             <div
               class="hero-reveal text-emerald-600 font-mono font-bold text-xs md:text-sm tracking-widest uppercase mb-2 flex items-center gap-2"
             >
-              <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              // {{ i18n.t().hero.badge }}
+              
             </div>
           </div>
 
