@@ -119,38 +119,32 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
             <!-- Bio -->
             <div class="text-stone-600 dark:text-stone-400 leading-relaxed space-y-4 about-reveal">
               <p>
-                <strong class="text-stone-800 dark:text-stone-200"
-                  >Técnico Titulado en Computación y Soluciones Informáticas</strong
-                >
-                y estudiante de Ingeniería de Sistemas. Desarrollador con experiencia en
+                <strong class="text-stone-700 dark:text-stone-200"
+                  >{{ i18n.t().about.bio1 }}</strong
+                >          
                 <span class="text-emerald-700 dark:text-emerald-400 font-medium"
-                  >backend (Java, Spring Boot, SQL Server)</span
+                  >{{ i18n.t().about.bio1_backend }}</span
                 >
-                y
+                {{ i18n.t().about.bio1_and }}
                 <span class="text-teal-700 dark:text-teal-400 font-medium"
-                  >frontend (Angular, Astro)</span
+                  >{{ i18n.t().about.bio1_frontend }}</span
                 >.
               </p>
               <p>
-                Especializado en la creación de
+                {{ i18n.t().about.bio2 }}
                 <strong class="text-stone-800 dark:text-stone-200"
-                  >aplicaciones web escalables</strong
+                  >{{ i18n.t().about.bio2_bold }}</strong
                 >
-                mediante arquitecturas de microservicios y tecnologías cloud-native
+                  {{ i18n.t().about.bio2_mid }}
                 <span
                   class="font-mono text-xs bg-stone-100 dark:bg-stone-800 dark:text-stone-300 px-2 py-0.5 rounded"
-                  >(AWS, Docker)</span
-                >. Apasionado por integrar prácticas
-                <strong class="text-stone-800 dark:text-stone-200"
-                  >DevOps (CI/CD, automatización)</strong
-                >
-                para optimizar el ciclo de desarrollo.
+                  >{{ i18n.t().about.bio2_devops }}</span
+                >  {{ i18n.t().about.bio2_end }}
               </p>
               <p
                 class="text-stone-500 dark:text-stone-400 text-sm border-l-2 border-emerald-500 pl-4 italic"
               >
-                "Busco oportunidades como Desarrollador Junior donde pueda aportar soluciones
-                técnicas innovadoras y seguir creciendo profesionalmente."
+                {{ i18n.t().about.quote }}
               </p>
             </div>
 
@@ -344,8 +338,8 @@ export class AboutSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   animatedStats = signal([
-    { value: '3+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 3, suffix: '+' },
-    { value: '15+', label: 'Proyectos', isNumber: true, currentValue: 0, target: 15, suffix: '+' },
+    { value: '2+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 2, suffix: '+' },
+    { value: '4+', label: 'Proyectos', isNumber: true, currentValue: 0, target: 4, suffix: '+' },
     {
       value: 'Full Stack',
       label: 'Enfoque',
