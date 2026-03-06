@@ -16,11 +16,11 @@ import { TranslateService } from '../../../core/services/translate.service';
     >
       <!-- Floating Abstract Circles (Parallax) -->
       <div
-        class="absolute top-20 right-[10%] w-80 md:w-[500px] h-80 md:h-[500px] bg-emerald-200/30 rounded-full blur-3xl mix-blend-multiply parallax-layer"
+        class="absolute top-20 right-[10%] w-80 md:w-125 h-80 md:h-125 bg-emerald-200/30 rounded-full blur-3xl mix-blend-multiply parallax-layer"
         data-speed="0.05"
       ></div>
       <div
-        class="absolute bottom-20 left-[5%] w-60 md:w-[400px] h-60 md:h-[400px] bg-teal-200/40 rounded-full blur-3xl mix-blend-multiply parallax-layer"
+        class="absolute bottom-20 left-[5%] w-60 md:w-100 h-60 md:h-100 bg-teal-200/40 rounded-full blur-3xl mix-blend-multiply parallax-layer"
         data-speed="-0.03"
       ></div>
 
