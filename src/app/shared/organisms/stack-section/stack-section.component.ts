@@ -63,8 +63,7 @@ interface TechCategory {
           <p class="text-slate-400 max-w-2xl mt-4 leading-relaxed">
             Mi flujo de trabajo combina la solidez empresarial de
             <span class="text-emerald-400 font-medium">Java</span> con la agilidad moderna de
-            <span class="text-emerald-400 font-medium">Angular</span>. Contenedores para que todo
-            funcione en producción.
+            <span class="text-emerald-400 font-medium">Angular</span>. Arquitecturas limpias y bases de datos robustas para construir sistemas que escalan de verdad.
           </p>
         </div>
 
@@ -263,7 +262,7 @@ export class StackSectionComponent implements OnDestroy, AfterViewInit {
         { name: 'Java 17/21', level: 'Avanzado', years: 2, iconKey: 'Java' },
         { name: 'Spring Boot 3', level: 'Avanzado', years: 2, iconKey: 'Spring Boot' },
         { name: 'PostgreSQL', level: 'Avanzado', years: 2, iconKey: 'PostgreSQL' },
-        { name: 'Docker', level: 'Intermedio', years: 2, iconKey: 'Docker' },
+        { name: 'JWT Security', level: 'Intermedio', years: 2, iconKey: 'Docker' },
       ],
     },
     {
@@ -279,15 +278,15 @@ export class StackSectionComponent implements OnDestroy, AfterViewInit {
       ],
     },
     {
-      title: 'Cloud & DevOps',
-      subtitle: '// infrastructure',
+      title: 'Entorno & Herramientas',
+      subtitle: '// infrastructure & tools',
       icon: 'cloud',
       accentColor: '#38bdf8', // AWS/cloud blue
       items: [
-        { name: 'AWS', level: 'Intermedio', years: 2, iconKey: 'AWS' },
-        { name: 'CI/CD', level: 'Intermedio', years: 2, iconKey: 'Git' },
         { name: 'Git/GitHub', level: 'Avanzado', years: 2, iconKey: 'Git' },
         { name: 'Linux', level: 'Intermedio', years: 2, iconKey: 'Linux' },
+        { name: 'Postman / Swagger', level: 'Intermedio', years: 2, iconKey: 'AWS' },
+        { name: 'Docker', level: 'Intermedio', years: 1, iconKey: 'Docker' },
       ],
     },
     {
@@ -304,7 +303,7 @@ export class StackSectionComponent implements OnDestroy, AfterViewInit {
     },
   ];
 
-  featuredTechs = ['Spring Boot', 'Angular', 'Docker', 'PostgreSQL', 'AWS'];
+  featuredTechs = ['Spring Boot', 'Angular', 'Docker', 'PostgreSQL'];
 
   // Map featured tag label → TECH_ICONS key
   private featuredIconMap: Partial<Record<string, keyof typeof TECH_ICONS>> = {
