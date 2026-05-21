@@ -46,3 +46,5 @@ Thumbs.db
 SYSTEM_DOCUMENTATION.md
 ARCHITECTURE_GUIDE.md
 CAREER_GUIDE.md
+# Local Pi runtime state
+.atl/

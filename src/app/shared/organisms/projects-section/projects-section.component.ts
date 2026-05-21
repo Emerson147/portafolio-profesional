@@ -17,11 +17,13 @@ import {
 } from '../../../core/data/icons.data';
 import { PROJECTS, Project } from '../../../core/data/projects.data';
 import { ProjectDetailModalComponent } from '../project-detail-modal/project-detail-modal.component';
+import { GsapService } from '../../../core/services/gsap.service';
+import { IconComponent } from '../../atoms/icon/icon.component';
 
 @Component({
   selector: 'app-projects-section',
   standalone: true,
-  imports: [CommonModule, ProjectDetailModalComponent],
+  imports: [CommonModule, ProjectDetailModalComponent, IconComponent],
   template: `
     <section
       id="projects"
@@ -88,9 +90,10 @@ import { ProjectDetailModalComponent } from '../project-detail-modal/project-det
 
         <!-- Project Cards Grid -->
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          @for (project of filteredProjects(); track project.title; let i = $index) {
+          @for (project of filteredProjectsSafe(); track project.title; let i = $index) {
             <div
-              class="project-card group relative bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 overflow-hidden rounded-xl shadow-sm hover:shadow-xl hover:shadow-emerald-900/10 dark:hover:shadow-emerald-900/30 hover:-translate-y-1 transition-all duration-500 ease-out"
+              #cardEl
+              class="project-card group relative bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 overflow-hidden rounded-xl shadow-sm hover:shadow-xl hover:shadow-emerald-900/10 dark:hover:shadow-emerald-900/30 transition-all duration-500 ease-out hover:-translate-y-2 cursor-pointer"
               [class.lg:col-span-2]="i === 0"
               [style.transition-delay.ms]="i * 100"
               style="min-height: 420px;"
@@ -128,7 +131,7 @@ import { ProjectDetailModalComponent } from '../project-detail-modal/project-det
               >
                 <div
                   class="w-full h-full text-stone-200 dark:text-stone-600 group-hover:text-emerald-500/30 transition-colors duration-500"
-                  [innerHTML]="getProjectVisual(project.type)"
+                  [innerHTML]="project.visualHtml"
                 ></div>
               </div>
 
@@ -167,9 +170,10 @@ import { ProjectDetailModalComponent } from '../project-detail-modal/project-det
                           target="_blank"
                           rel="noopener noreferrer"
                           class="w-9 h-9 border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-300 rounded-full flex items-center justify-center hover:border-emerald-500 hover:bg-emerald-500 hover:text-white transition-all duration-200"
-                          [innerHTML]="getIcon('github')"
                           (click)="$event.stopPropagation()"
-                        ></a>
+                        >
+                          <app-icon name="github" [size]="16" />
+                        </a>
                       }
                       @if (project.demo) {
                         <a
@@ -177,9 +181,10 @@ import { ProjectDetailModalComponent } from '../project-detail-modal/project-det
                           target="_blank"
                           rel="noopener noreferrer"
                           class="w-9 h-9 border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-300 rounded-full flex items-center justify-center hover:border-teal-500 hover:bg-teal-500 hover:text-white transition-all duration-200"
-                          [innerHTML]="getIcon('externalLink')"
                           (click)="$event.stopPropagation()"
-                        ></a>
+                        >
+                          <app-icon name="externalLink" [size]="16" />
+                        </a>
                       }
                     </div>
                   </div>
@@ -212,12 +217,12 @@ import { ProjectDetailModalComponent } from '../project-detail-modal/project-det
 
                   <!-- Tech tags -->
                   <div class="flex flex-wrap gap-1.5">
-                    @for (tag of project.tags; track tag) {
+                    @for (tag of project.tagsSafe; track tag.name) {
                       <span
                         class="flex items-center gap-1.5 text-xs font-mono border border-stone-300 dark:border-stone-600 text-stone-500 dark:text-stone-400 group-hover:border-emerald-500/60 group-hover:text-emerald-400 px-2.5 py-0.5 rounded transition-colors duration-200"
                       >
-                        <span class="w-3.5 h-3.5 shrink-0" [innerHTML]="getTechIcon(tag)"></span>
-                        {{ tag }}
+                        <span class="w-3.5 h-3.5 shrink-0" [innerHTML]="tag.iconHtml"></span>
+                        {{ tag.name }}
                       </span>
                     }
                   </div>
@@ -324,6 +329,7 @@ import { ProjectDetailModalComponent } from '../project-detail-modal/project-det
 export class ProjectsSectionComponent implements AfterViewInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
+  private gsap = inject(GsapService);
 
   private revealObserver: IntersectionObserver | null = null;
   private cardObserver: IntersectionObserver | null = null;
@@ -339,6 +345,22 @@ export class ProjectsSectionComponent implements AfterViewInit, OnDestroy {
   filteredProjects = computed(() => {
     const filter = this.activeFilter();
     return filter === 'all' ? this.projects : this.projects.filter((p) => p.tags.includes(filter));
+  });
+
+  filteredProjectsSafe = computed(() => {
+    const list = this.filteredProjects();
+    return list.map((project) => ({
+      ...project,
+      visualHtml: this.sanitizer.bypassSecurityTrustHtml(
+        PROJECT_VISUALS[project.type as ProjectVisualType] ?? PROJECT_VISUALS.PLATFORM,
+      ),
+      tagsSafe: project.tags.map((tag) => ({
+        name: tag,
+        iconHtml: this.sanitizer.bypassSecurityTrustHtml(
+          TECH_ICONS[tag as keyof typeof TECH_ICONS] ?? '',
+        ),
+      })),
+    }));
   });
 
   uniqueTechs = computed(() => {
@@ -389,6 +411,17 @@ export class ProjectsSectionComponent implements AfterViewInit, OnDestroy {
       document.querySelectorAll('#projects .project-card').forEach((el) => {
         this.cardObserver?.observe(el);
       });
+
+      // Fallback: si tras 1.5s el observer no disparó (p.ej. SSR/init edge-cases),
+      // forzamos la visibilidad de todas las tarjetas.
+      setTimeout(() => {
+        document.querySelectorAll('#projects .project-reveal:not(.visible)').forEach((el) => {
+          el.classList.add('visible');
+        });
+        document.querySelectorAll('#projects .project-card:not(.visible)').forEach((el) => {
+          el.classList.add('visible');
+        });
+      }, 1500);
     });
   }
 
@@ -411,22 +444,6 @@ export class ProjectsSectionComponent implements AfterViewInit, OnDestroy {
   getProjectCount(tech: string): number {
     if (tech === 'all') return this.projects.length;
     return this.projects.filter((p) => p.tags.includes(tech)).length;
-  }
-
-  getProjectVisual(type: ProjectVisualType): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(
-      PROJECT_VISUALS[type] ?? PROJECT_VISUALS.PLATFORM,
-    );
-  }
-
-  getIcon(name: keyof typeof ICONS): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(ICONS[name] ?? '');
-  }
-
-  getTechIcon(tech: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(
-      TECH_ICONS[tech as keyof typeof TECH_ICONS] ?? '',
-    );
   }
 
   getStatusClass(status: Project['status']): string {

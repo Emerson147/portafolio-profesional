@@ -371,8 +371,8 @@ export class ContactSectionComponent implements AfterViewInit, OnDestroy {
     },
     {
       label: 'LinkedIn',
-      value: 'emerson-quijada-rafael',
-      href: 'https://linkedin.com/in/emerson-quijada-rafael',
+      value: 'Emerson Rafael',
+      href: 'https://www.linkedin.com/in/migattedev',
       icon: 'linkedin',
       accent: '#0ea5e9',
     },

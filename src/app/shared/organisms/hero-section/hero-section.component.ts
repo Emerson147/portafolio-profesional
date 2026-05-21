@@ -11,130 +11,92 @@ import { TranslateService } from '../../../core/services/translate.service';
   imports: [CommonModule, ButtonComponent, CodeSnippetComponent],
   template: `
     <section
-      class="relative min-h-screen flex items-center px-6 pt-20 pb-12 overflow-hidden bg-white dark:bg-stone-950 transition-colors duration-500"
+      class="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden bg-white dark:bg-[#050505] transition-colors duration-500"
       (mousemove)="onMouseMove($event)"
     >
-      <!-- Floating Abstract Circles (Parallax) -->
+      <!-- Spotlight Orbs (Ambient glow) -->
       <div
-        class="absolute top-20 right-[10%] w-80 md:w-125 h-80 md:h-125 bg-emerald-200/30 rounded-full blur-3xl mix-blend-multiply parallax-layer"
-        data-speed="0.05"
+        class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-500/10 via-stone-50/0 to-stone-50/0 dark:from-cyan-500/20 dark:via-[#050505]/0 dark:to-[#050505]/0 -z-10 pointer-events-none parallax-layer"
+        data-speed="0.02"
       ></div>
       <div
-        class="absolute bottom-20 left-[5%] w-60 md:w-100 h-60 md:h-100 bg-teal-200/40 rounded-full blur-3xl mix-blend-multiply parallax-layer"
-        data-speed="-0.03"
+        class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/5 dark:bg-emerald-500/10 rounded-full blur-[120px] -z-10 pointer-events-none parallax-layer"
+        data-speed="-0.01"
       ></div>
 
+      <!-- Background Grid (Very subtle) -->
       <div
-        class="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10"
+        class="absolute inset-0 opacity-[0.02] dark:opacity-[0.03] pointer-events-none"
+        style="background-image: linear-gradient(rgba(0, 0, 0, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 1) 1px, transparent 1px); background-size: 64px 64px;"
+      ></div>
+
+      <div class="z-10 flex flex-col items-center text-center max-w-4xl pt-10">
+        <!-- Status Pill -->
+        <div
+          class="hero-reveal mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/60 backdrop-blur-md shadow-sm"
+        >
+          <span class="relative flex h-2 w-2">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+            ></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span
+            class="text-[11px] font-medium tracking-widest text-stone-600 dark:text-stone-400 uppercase"
+            >Available for work</span
+          >
+        </div>
+
+        <!-- Headline -->
+        <h1
+          class="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tighter text-stone-900 dark:text-white leading-[1.05] mb-6"
+        >
+          <div class="overflow-hidden pb-2">
+            <span class="hero-reveal inline-block">{{ i18n.t().hero.line1 }}</span>
+          </div>
+          <div class="overflow-hidden pb-2">
+            <span
+              class="hero-reveal inline-block text-transparent bg-clip-text bg-linear-to-r from-stone-500 to-stone-900 dark:from-stone-300 dark:to-white"
+            >
+              {{ i18n.t().hero.line2 }}
+            </span>
+          </div>
+          <div class="overflow-hidden pb-2">
+            <span class="hero-reveal inline-block">{{ i18n.t().hero.line3 }}</span>
+          </div>
+        </h1>
+
+        <!-- Subheadline -->
+        <p
+          class="hero-desc opacity-0 text-lg sm:text-xl md:text-2xl text-stone-600 dark:text-stone-400 max-w-2xl mb-12 font-light leading-relaxed"
+        >
+          {{ i18n.t().hero.intro }}
+          <strong class="font-medium text-stone-900 dark:text-white">Emerson</strong> —
+          {{ i18n.t().hero.role }}
+        </p>
+
+        <!-- CTAs -->
+        <div class="hero-cta opacity-0 flex flex-col sm:flex-row items-center gap-4">
+          <app-button
+            variant="primary"
+            href="#projects"
+            [showArrow]="true"
+            (click)="scrollTo($event, '#projects')"
+          >
+            {{ i18n.t().hero.cta_projects }}
+          </app-button>
+          <app-button variant="secondary" href="#about" (click)="scrollTo($event, '#about')">
+            {{ i18n.t().hero.cta_about }}
+          </app-button>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div
+        class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40 animate-bounce hidden sm:flex"
       >
-        <!-- Text Content -->
-        <div class="lg:col-span-7 space-y-6 md:space-y-8 hero-text-container">
-          <div class="inline-block overflow-hidden">
-            <div
-              class="hero-reveal text-emerald-600 font-mono font-bold text-xs md:text-sm tracking-widest uppercase mb-2 flex items-center gap-2"
-            >
-              
-            </div>
-          </div>
-
-          <h1
-            class="text-fluid-h1 font-bold text-stone-900 dark:text-stone-50 leading-[0.95] tracking-tight"
-          >
-            <div class="overflow-hidden">
-              <span class="hero-reveal inline-block origin-bottom-left">{{
-                i18n.t().hero.line1
-              }}</span>
-            </div>
-            <div class="overflow-hidden">
-              <span
-                class="hero-reveal inline-block origin-bottom-left text-transparent bg-clip-text bg-linear-to-r from-emerald-600 via-teal-500 to-cyan-500"
-                >{{ i18n.t().hero.line2 }}</span
-              >
-            </div>
-            <div class="overflow-hidden">
-              <span class="hero-reveal inline-block origin-bottom-left">{{
-                i18n.t().hero.line3
-              }}</span>
-            </div>
-          </h1>
-
-          <!-- Simple intro line instead of paragraph -->
-          <p
-            class="text-lg md:text-xl text-stone-500 dark:text-stone-400 hero-desc opacity-0 transform translate-y-4"
-          >
-            {{ i18n.t().hero.intro }}
-            <strong class="text-stone-900 dark:text-stone-100">Emerson</strong> —
-            {{ i18n.t().hero.role }}
-          </p>
-
-          <div
-            class="flex flex-wrap gap-3 md:gap-4 pt-2 md:pt-4 hero-cta opacity-0 transform translate-y-4"
-          >
-            <app-button
-              variant="primary"
-              href="#projects"
-              [showArrow]="true"
-              (click)="scrollTo($event, '#projects')"
-            >
-              {{ i18n.t().hero.cta_projects }}
-            </app-button>
-            <app-button variant="secondary" href="#about" (click)="scrollTo($event, '#about')">
-              {{ i18n.t().hero.cta_about }}
-            </app-button>
-          </div>
-
-          <!-- Mobile Tech Stack Pills -->
-          <div class="flex flex-wrap gap-2 pt-4 md:hidden">
-            <span class="text-xs bg-slate-900 text-emerald-400 px-3 py-1.5 rounded-full font-mono"
-              >Java</span
-            >
-            <span class="text-xs bg-slate-900 text-blue-400 px-3 py-1.5 rounded-full font-mono"
-              >Spring Boot</span
-            >
-            <span class="text-xs bg-slate-900 text-red-400 px-3 py-1.5 rounded-full font-mono"
-              >Angular</span
-            >
-            <span class="text-xs bg-slate-900 text-cyan-400 px-3 py-1.5 rounded-full font-mono"
-              >Docker</span
-            >
-          </div>
-        </div>
-
-        <!-- Visual Content (Code Card) - Desktop -->
-        <div class="lg:col-span-5 relative perspective-container hidden md:block">
-          <app-code-snippet />
-          <!-- Decorative Elements -->
-          <div
-            class="absolute -inset-4 bg-linear-to-r from-emerald-500/10 to-teal-500/10 rounded-3xl -z-10 blur-xl"
-          ></div>
-          <div
-            class="absolute inset-0 bg-slate-900/5 transform translate-x-6 translate-y-6 rounded-2xl -z-20"
-          ></div>
-        </div>
-
-        <!-- Mobile Code Preview Card -->
-        <div class="md:hidden mt-6">
-          <div class="bg-slate-900 rounded-xl p-4 border border-slate-700 shadow-lg">
-            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-700">
-              <div class="flex gap-1.5">
-                <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-              </div>
-              <span class="text-slate-400 text-xs ml-2">MigatteProfile.java</span>
-            </div>
-            <div class="font-mono text-xs leading-relaxed">
-              <div class="text-yellow-500">&#64;Service</div>
-              <div>
-                <span class="text-purple-400">public class</span>
-                <span class="text-yellow-300">MigatteProfile</span> {{ '{' }}
-              </div>
-              <div class="pl-4 text-emerald-400">String role = "Full Stack Dev";</div>
-              <div class="pl-4 text-slate-500">// Java · Angular · Docker</div>
-              <div class="text-slate-400">{{ '}' }}</div>
-            </div>
-          </div>
-        </div>
+        <span class="text-[10px] tracking-widest uppercase font-mono text-stone-500">Scroll</span>
+        <div class="w-px h-10 bg-stone-300 dark:bg-stone-700"></div>
       </div>
     </section>
   `,
@@ -142,9 +104,6 @@ import { TranslateService } from '../../../core/services/translate.service';
     `
       :host {
         display: block;
-      }
-      .perspective-container {
-        perspective: 1000px;
       }
     `,
   ],

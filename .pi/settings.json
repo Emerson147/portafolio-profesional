@@ -1,0 +1,63 @@
+{
+	"subagents": {
+		"agentOverrides": {
+			"sdd-init": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-explore": {
+				"model": "google/gemini-3.1-flash-lite"
+			},
+			"sdd-proposal": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-spec": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-design": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-tasks": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-apply": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-verify": {
+				"model": "google/gemini-3.1-flash-lite"
+			},
+			"sdd-sync": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-archive": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"context-builder": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"delegate": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"oracle": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"planner": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"researcher": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"reviewer": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"scout": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"sdd-onboard": {
+				"model": "google/gemini-3.1-pro-preview"
+			},
+			"worker": {
+				"model": "google/gemini-3.1-pro-preview"
+			}
+		}
+	}
+}

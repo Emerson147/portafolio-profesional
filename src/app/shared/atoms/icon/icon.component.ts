@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input, computed } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ICONS, IconName } from '../../../core/data/icons.data';
 
@@ -7,9 +7,9 @@ import { ICONS, IconName } from '../../../core/data/icons.data';
   standalone: true,
   template: `<span
     class="inline-flex items-center justify-center"
-    [style.width.px]="size"
-    [style.height.px]="size"
-    [innerHTML]="iconSvg"
+    [style.width.px]="size()"
+    [style.height.px]="size()"
+    [innerHTML]="iconSvg()"
   ></span>`,
   styles: [
     `
@@ -27,13 +27,13 @@ import { ICONS, IconName } from '../../../core/data/icons.data';
   ],
 })
 export class IconComponent {
-  @Input({ required: true }) name!: IconName;
-  @Input() size = 24;
+  name = input.required<IconName>();
+  size = input<number>(24);
 
   private sanitizer = inject(DomSanitizer);
 
-  get iconSvg(): SafeHtml {
-    const svg = ICONS[this.name];
+  iconSvg = computed<SafeHtml>(() => {
+    const svg = ICONS[this.name()];
     return svg ? this.sanitizer.bypassSecurityTrustHtml(svg) : '';
-  }
+  });
 }

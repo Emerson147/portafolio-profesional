@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div
-      class="min-h-screen bg-[#f5f5f4] text-[#292524] font-sans selection:bg-emerald-200 selection:text-emerald-900 main-container opacity-0 relative overflow-x-hidden"
+      class="min-h-screen bg-[#f5f5f4] text-[#292524] font-sans selection:bg-emerald-200 selection:text-emerald-900 main-container relative overflow-x-hidden"
     >
       <!-- Fixed Vertical Elements (Japanese Style) -->
       <div

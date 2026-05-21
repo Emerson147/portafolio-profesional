@@ -41,6 +41,7 @@
     "@angular/build": "^21.0.1",
     "@angular/cli": "^21.0.1",
     "@angular/compiler-cli": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.2.1",
     "@tailwindcss/postcss": "^4.1.18",
     "angular-cli-ghpages": "^3.0.2",
     "autoprefixer": "^10.4.23",

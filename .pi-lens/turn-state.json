@@ -1,0 +1,27 @@
+{
+  "files": {
+    "src/app/shared/organisms/navbar/navbar.component.ts": {
+      "modifiedRanges": [
+        {
+          "start": 1,
+          "end": 193
+        }
+      ],
+      "importsChanged": true,
+      "lastEdit": "2026-05-20T23:02:10.929Z"
+    },
+    "src/app/core/data/icons.data.ts": {
+      "modifiedRanges": [
+        {
+          "start": 1,
+          "end": 59
+        }
+      ],
+      "importsChanged": false,
+      "lastEdit": "2026-05-20T23:02:11.497Z"
+    }
+  },
+  "turnCycles": 0,
+  "maxCycles": 3,
+  "lastUpdated": "2026-05-20T23:02:11.497Z"
+}

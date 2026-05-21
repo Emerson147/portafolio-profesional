@@ -79,9 +79,8 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   async onLoadingComplete() {
     await this.gsapLoadedPromise;
     setTimeout(() => {
-      this.gsap.revealMainContainer();
       this.gsap.animateHero();
       this.gsap.setupScrollTriggers();
-    }, 500);
+    }, 200);
   }
 }

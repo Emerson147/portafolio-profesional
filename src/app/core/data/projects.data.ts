@@ -29,6 +29,53 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    slug: 'importaciones-denraf',
+    title: 'Importaciones DENRAF',
+    type: 'PLATFORM',
+    desc: 'Sistema de gestión empresarial para PYMEs de venta e importación. POS intuitivo, control de inventario, gestión de clientes, reportes exportables y métricas en tiempo real. Offline-first con IndexedDB y sincronización a Supabase/PostgreSQL.',
+    tags: ['Angular', 'Supabase', 'PostgreSQL', 'IndexedDB'],
+    github: 'https://github.com/Emerson147/importaciones-denraf',
+    role: 'Full Stack Developer',
+    date: '2025',
+    duration: '6 meses',
+    status: 'Completado',
+    metrics: { users: '50+', uptime: '99.8%', performance: '<150ms' },
+    challenge:
+      'El mayor reto fue diseñar una experiencia fluida que funcionara sin conexión, garantizando que ningún dato de venta se perdiera y que la sincronización con la nube al reconectar fuera transparente, confiable y sin conflictos.',
+    solution:
+      'Implementé una arquitectura Offline-First usando IndexedDB como fuente de verdad local y Service Workers para interceptar peticiones. Al restaurar la conexión, un proceso de sincronización reconcilia los datos locales con Supabase/PostgreSQL resolviendo conflictos con estrategia "last-write-wins" por entidad.',
+    learnings: [
+      'Arquitectura Offline-First con IndexedDB y Service Workers.',
+      'Sincronización de datos con Supabase (Realtime + REST).',
+      'Estado reactivo declarativo con Angular Signals (signal, computed, effect).',
+      'Facade Pattern para separar lógica de negocio de la vista en el módulo POS.',
+      'Lazy Loading y CustomPreloadingStrategy por prioridad de ruta.',
+    ],
+  },
+  {
+    slug: 'gestion-inventario-ely',
+    title: 'Sistema de Gestión de Inventario y Ventas La Peruanita',
+    type: 'PLATFORM',
+    desc: 'Plataforma de gestión de inventario con Spring Boot y Angular. Funcionalidades clave incluyen seguimiento de existencias, gestión de proveedores y generación de reportes personalizados.',
+    tags: ['Spring Boot', 'Angular', 'MySQL', 'JWT'],
+    github: 'https://github.com/Emerson147/gestion-inventario-ely',
+    role: 'Full Stack Developer',
+    date: '2025',
+    duration: '5 meses',
+    status: 'Completado',
+    metrics: { users: '3+', uptime: '99.8%', performance: '<150ms' },
+    challenge:
+      'El principal desafío fue integrar múltiples sistemas externos de seguimiento de inventario y proveedores, cada uno con APIs y formatos de datos diferentes, sin afectar la experiencia del usuario.',
+    solution:
+      'Diseñé una capa de integración modular utilizando el patrón Adapter para normalizar los datos de los diferentes proveedores. Esto permitió agregar nuevos proveedores en el futuro sin cambios significativos en la lógica del negocio.',
+    learnings: [
+      'Diseño de arquitecturas modulares con Spring Boot.',
+      'Gestión de estado en Angular con Signals.',
+      'Optimización de consultas SQL para grandes volúmenes de datos.',
+      'Implementación de autenticación y autorización con JWT.',
+    ],
+  },
+  {
     slug: 'sistema-gestion-academica',
     title: 'Sistema de Gestión Académica',
     type: 'PLATFORM',

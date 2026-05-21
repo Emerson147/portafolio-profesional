@@ -1,0 +1,153 @@
+{
+  "success": true,
+  "issues": [
+    {
+      "type": "file",
+      "name": "src/styles.css",
+      "file": "src/styles.css"
+    },
+    {
+      "type": "file",
+      "name": "src/app/app.css",
+      "file": "src/app/app.css"
+    },
+    {
+      "type": "file",
+      "name": "src/app/core/data/tech-icons.data.ts",
+      "file": "src/app/core/data/tech-icons.data.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/core/data/tech-stack.data.ts",
+      "file": "src/app/core/data/tech-stack.data.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/core/services/project.service.ts",
+      "file": "src/app/core/services/project.service.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/shared/atoms/badge/badge.component.ts",
+      "file": "src/app/shared/atoms/badge/badge.component.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/shared/molecules/boot-log-entry/boot-log-entry.component.ts",
+      "file": "src/app/shared/molecules/boot-log-entry/boot-log-entry.component.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/shared/molecules/tech-card/tech-card.component.ts",
+      "file": "src/app/shared/molecules/tech-card/tech-card.component.ts"
+    },
+    {
+      "type": "dependency",
+      "name": "@types/three",
+      "file": "package.json",
+      "line": 33
+    },
+    {
+      "type": "dependency",
+      "name": "three",
+      "file": "package.json",
+      "line": 37
+    },
+    {
+      "type": "devDependency",
+      "name": "autoprefixer",
+      "file": "package.json",
+      "line": 47
+    },
+    {
+      "type": "export",
+      "name": "TechIconName",
+      "file": "src/app/core/data/icons.data.ts",
+      "line": 58
+    },
+    {
+      "type": "export",
+      "name": "ProjectMetrics",
+      "file": "src/app/core/data/projects.data.ts",
+      "line": 3
+    }
+  ],
+  "unusedExports": [
+    {
+      "type": "export",
+      "name": "TechIconName",
+      "file": "src/app/core/data/icons.data.ts",
+      "line": 58
+    },
+    {
+      "type": "export",
+      "name": "ProjectMetrics",
+      "file": "src/app/core/data/projects.data.ts",
+      "line": 3
+    }
+  ],
+  "unusedFiles": [
+    {
+      "type": "file",
+      "name": "src/styles.css",
+      "file": "src/styles.css"
+    },
+    {
+      "type": "file",
+      "name": "src/app/app.css",
+      "file": "src/app/app.css"
+    },
+    {
+      "type": "file",
+      "name": "src/app/core/data/tech-icons.data.ts",
+      "file": "src/app/core/data/tech-icons.data.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/core/data/tech-stack.data.ts",
+      "file": "src/app/core/data/tech-stack.data.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/core/services/project.service.ts",
+      "file": "src/app/core/services/project.service.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/shared/atoms/badge/badge.component.ts",
+      "file": "src/app/shared/atoms/badge/badge.component.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/shared/molecules/boot-log-entry/boot-log-entry.component.ts",
+      "file": "src/app/shared/molecules/boot-log-entry/boot-log-entry.component.ts"
+    },
+    {
+      "type": "file",
+      "name": "src/app/shared/molecules/tech-card/tech-card.component.ts",
+      "file": "src/app/shared/molecules/tech-card/tech-card.component.ts"
+    }
+  ],
+  "unusedDeps": [
+    {
+      "type": "dependency",
+      "name": "@types/three",
+      "file": "package.json",
+      "line": 33
+    },
+    {
+      "type": "dependency",
+      "name": "three",
+      "file": "package.json",
+      "line": 37
+    },
+    {
+      "type": "devDependency",
+      "name": "autoprefixer",
+      "file": "package.json",
+      "line": 47
+    }
+  ],
+  "unlistedDeps": [],
+  "summary": "Found 13 issues"
+}

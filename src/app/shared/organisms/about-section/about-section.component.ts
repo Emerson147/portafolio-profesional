@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  computed,
   OnInit,
   OnDestroy,
   AfterViewInit,
@@ -14,11 +15,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { GsapService } from '../../../core/services/gsap.service';
 import { TranslateService } from '../../../core/services/translate.service';
 import { TECH_ICONS } from '../../../core/data/icons.data';
+import { ButtonComponent } from '../../atoms/button/button.component';
 
 @Component({
   selector: 'app-about-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ButtonComponent],
   template: `
     <section
       id="about"
@@ -35,7 +37,7 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
         <!-- Section Header -->
         <div class="mb-14 about-reveal">
           <span
-            class="text-emerald-600 font-mono font-bold text-xs tracking-widest uppercase mb-3 block"
+            class="text-cyan-600 dark:text-cyan-400 font-mono font-bold text-xs tracking-widest uppercase mb-3 block"
           >
             // {{ i18n.t().about.label }}
           </span>
@@ -54,15 +56,15 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
               <div class="relative aspect-square">
                 <!-- Animated decorative frames -->
                 <div
-                  class="absolute -inset-3 bg-emerald-500/10 rounded-2xl transform rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-500"
+                  class="absolute -inset-3 bg-cyan-500/10 rounded-2xl transform rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-500"
                 ></div>
                 <div
-                  class="absolute -inset-3 border border-emerald-500/20 rounded-2xl transform -rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-500"
+                  class="absolute -inset-3 border border-cyan-500/20 rounded-2xl transform -rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-500"
                 ></div>
 
                 <!-- Photo -->
                 <div
-                  class="relative bg-stone-100 rounded-xl overflow-hidden aspect-square shadow-lg group-hover:shadow-2xl group-hover:shadow-emerald-500/20 transition-all duration-500"
+                  class="relative bg-stone-100 rounded-xl overflow-hidden aspect-square shadow-lg group-hover:shadow-2xl group-hover:shadow-cyan-500/20 transition-all duration-500"
                 >
                   <img
                     src="images/profile.jpeg"
@@ -77,14 +79,14 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
 
                 <!-- Available Badge -->
                 <div
-                  class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-1.5 rounded-full shadow-lg flex items-center gap-2 group-hover:bg-emerald-600 transition-colors duration-300"
+                  class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-stone-900 dark:bg-stone-800 text-white px-4 py-1.5 rounded-full shadow-lg flex items-center gap-2 group-hover:bg-cyan-600 transition-colors duration-300"
                 >
                   <span class="relative flex h-2 w-2">
                     <span
-                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"
                     ></span>
                     <span
-                      class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 group-hover:bg-white transition-colors"
+                      class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 group-hover:bg-white transition-colors"
                     ></span>
                   </span>
                   <span class="text-xs font-medium">Disponible</span>
@@ -113,7 +115,7 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
               <h3 class="text-xl md:text-2xl font-bold text-stone-900 dark:text-stone-100 mb-1">
                 {{ i18n.t().about.name }}
               </h3>
-              <p class="text-emerald-600 font-mono text-sm">{{ i18n.t().about.subtitle }}</p>
+              <p class="text-cyan-600 dark:text-cyan-400 font-mono text-sm">{{ i18n.t().about.subtitle }}</p>
             </div>
 
             <!-- Bio -->
@@ -122,11 +124,11 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
                 <strong class="text-stone-700 dark:text-stone-200"
                   >{{ i18n.t().about.bio1 }}</strong
                 >          
-                <span class="text-emerald-700 dark:text-emerald-400 font-medium"
+                <span class="text-cyan-700 dark:text-cyan-400 font-medium"
                   >{{ i18n.t().about.bio1_backend }}</span
                 >
                 {{ i18n.t().about.bio1_and }}
-                <span class="text-teal-700 dark:text-teal-400 font-medium"
+                <span class="text-purple-700 dark:text-purple-400 font-medium"
                   >{{ i18n.t().about.bio1_frontend }}</span
                 >.
               </p>
@@ -142,7 +144,7 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
                 >  {{ i18n.t().about.bio2_end }}
               </p>
               <p
-                class="text-stone-500 dark:text-stone-400 text-sm border-l-2 border-emerald-500 pl-4 italic"
+                class="text-stone-500 dark:text-stone-400 text-sm border-l-2 border-cyan-500 pl-4 italic"
               >
                 {{ i18n.t().about.quote }}
               </p>
@@ -165,11 +167,11 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
                 <div
                   class="text-stone-600 dark:text-stone-400 text-xs space-y-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
                 >
-                  @for (item of backendItems; track item.label) {
+                  @for (item of backendItemsSafe(); track item.label) {
                     <div class="flex items-center gap-1.5">
                       <span
                         class="w-3 h-3 shrink-0 text-orange-500/70"
-                        [innerHTML]="getSafeIcon(item.icon)"
+                        [innerHTML]="item.safeIcon"
                       ></span>
                       <span>{{ item.label }}</span>
                     </div>
@@ -192,11 +194,11 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
                 <div
                   class="text-stone-600 dark:text-stone-400 text-xs space-y-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
                 >
-                  @for (item of frontendItems; track item.label) {
+                  @for (item of frontendItemsSafe(); track item.label) {
                     <div class="flex items-center gap-1.5">
                       <span
                         class="w-3 h-3 shrink-0 text-red-500/70"
-                        [innerHTML]="getSafeIcon(item.icon)"
+                        [innerHTML]="item.safeIcon"
                       ></span>
                       <span>{{ item.label }}</span>
                     </div>
@@ -207,13 +209,13 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
 
             <!-- CTAs -->
             <div class="flex flex-wrap gap-3 pt-3 about-reveal">
-              <a
+              <app-button
+                variant="primary"
                 href="#contact"
                 (click)="scrollToContact($event)"
-                class="group inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-lg hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 cursor-pointer active:scale-95"
               >
                 <svg
-                  class="w-4 h-4 group-hover:scale-110 transition-transform"
+                  class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform inline-block"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -226,14 +228,13 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
                   />
                 </svg>
                 {{ i18n.t().about.cta_contact }}
-              </a>
-              <a
+              </app-button>
+              <app-button
+                variant="secondary"
                 href="https://minimalist-portfolio-eta.vercel.app/"
                 target="_blank"
-                rel="noopener noreferrer"
-                class="group inline-flex items-center gap-2 px-5 py-2.5 border-2 border-stone-200 text-stone-600 text-sm font-bold rounded-lg hover:border-emerald-500 hover:text-emerald-700 transition-all active:scale-95"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -242,14 +243,14 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
                   />
                 </svg>
                 {{ i18n.t().about.cta_cv_online }}
-              </a>
-              <a
+              </app-button>
+              <app-button
+                variant="secondary"
                 href="cv/CV_Emerson_Quijada_Rafael.pdf"
                 download="CV_Emerson_Quijada_Rafael.pdf"
-                class="group inline-flex items-center gap-2 px-5 py-2.5 border-2 border-stone-200 text-stone-600 text-sm font-bold rounded-lg hover:border-emerald-500 hover:text-emerald-700 transition-all active:scale-95"
               >
                 <svg
-                  class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"
+                  class="w-4 h-4 mr-2 group-hover:translate-y-0.5 transition-transform inline-block"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -262,7 +263,7 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
                   />
                 </svg>
                 {{ i18n.t().about.cta_cv_download }}
-              </a>
+              </app-button>
             </div>
           </div>
         </div>
@@ -274,7 +275,7 @@ import { TECH_ICONS } from '../../../core/data/icons.data';
           @for (stat of animatedStats(); track stat.label) {
             <div class="text-center about-reveal group cursor-default">
               <div
-                class="text-2xl md:text-3xl font-bold text-stone-800 dark:text-stone-200 group-hover:text-emerald-600 transition-colors"
+                class="text-2xl md:text-3xl font-bold text-stone-800 dark:text-stone-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors"
               >
                 @if (stat.isNumber) {
                   <span class="tabular-nums">{{ stat.currentValue }}</span
@@ -337,6 +338,20 @@ export class AboutSectionComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: 'HTML5 · CSS3 · JS', icon: 'Angular' as keyof typeof TECH_ICONS },
   ];
 
+  backendItemsSafe = computed(() => {
+    return this.backendItems.map((item) => ({
+      label: item.label,
+      safeIcon: this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[item.icon] || ''),
+    }));
+  });
+
+  frontendItemsSafe = computed(() => {
+    return this.frontendItems.map((item) => ({
+      label: item.label,
+      safeIcon: this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[item.icon] || ''),
+    }));
+  });
+
   animatedStats = signal([
     { value: '2+', label: 'Años Dev', isNumber: true, currentValue: 0, target: 2, suffix: '+' },
     { value: '4+', label: 'Proyectos', isNumber: true, currentValue: 0, target: 4, suffix: '+' },
@@ -395,33 +410,26 @@ export class AboutSectionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private animateCounters() {
-    const stats = this.animatedStats();
-    const duration = 1400;
-    const steps = 30;
-    const interval = duration / steps;
+    if (!isPlatformBrowser(this.platformId) || !this.gsap.gsap) return;
 
+    const stats = this.animatedStats();
     stats.forEach((stat, index) => {
       if (!stat.isNumber) return;
-      let current = 0;
-      const increment = stat.target / steps;
 
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= stat.target) {
-          current = stat.target;
-          clearInterval(timer);
-        }
-        this.animatedStats.update((s) => {
-          const u = [...s];
-          u[index] = { ...u[index], currentValue: Math.floor(current) };
-          return u;
-        });
-      }, interval);
+      const obj = { val: 0 };
+      this.gsap.gsap.to(obj, {
+        val: stat.target,
+        duration: 1.4,
+        ease: 'power2.out',
+        onUpdate: () => {
+          this.animatedStats.update((s) => {
+            const u = [...s];
+            u[index] = { ...u[index], currentValue: Math.floor(obj.val) };
+            return u;
+          });
+        },
+      });
     });
-  }
-
-  getSafeIcon(iconName: keyof typeof TECH_ICONS): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[iconName] || '');
   }
 
   scrollToContact(event: Event) {

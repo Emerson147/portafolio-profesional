@@ -1,58 +1,34 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
 @Injectable({ providedIn: 'root' })
 export class GsapService {
   private platformId = inject(PLATFORM_ID);
-  private gsapLoaded = false;
+  private isBrowser = isPlatformBrowser(this.platformId);
+
+  constructor() {
+    if (this.isBrowser) {
+      gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+    }
+  }
 
   get gsap(): any {
-    return (window as any).gsap;
+    return this.isBrowser ? gsap : null;
   }
 
   get ScrollTrigger(): any {
-    return (window as any).ScrollTrigger;
+    return this.isBrowser ? ScrollTrigger : null;
   }
 
+  /**
+   * Preserved for backward compatibility in case other components
+   * call loadGsap() before running animations.
+   */
   loadGsap(): Promise<void> {
-    if (!isPlatformBrowser(this.platformId)) {
-      return Promise.resolve();
-    }
-
-    if (this.gsapLoaded || this.gsap) {
-      return Promise.resolve();
-    }
-
-    return new Promise((resolve) => {
-      // Load GSAP Core
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
-      script.onload = () => {
-        // Load ScrollTrigger
-        const stScript = document.createElement('script');
-        stScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js';
-        stScript.onload = () => {
-          if (this.gsap && (window as any).ScrollTrigger) {
-            this.gsap.registerPlugin((window as any).ScrollTrigger);
-          }
-
-          // Load ScrollToPlugin
-          const scrollToScript = document.createElement('script');
-          scrollToScript.src =
-            'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js';
-          scrollToScript.onload = () => {
-            if (this.gsap && (window as any).ScrollToPlugin) {
-              this.gsap.registerPlugin((window as any).ScrollToPlugin);
-            }
-            this.gsapLoaded = true;
-            resolve();
-          };
-          document.body.appendChild(scrollToScript);
-        };
-        document.body.appendChild(stScript);
-      };
-      document.body.appendChild(script);
-    });
+    return Promise.resolve();
   }
 
   // Animation Methods
@@ -67,24 +43,14 @@ export class GsapService {
     const tl = this.gsap.timeline();
 
     tl.from('.hero-reveal', {
-      y: 100,
+      y: 60,
       opacity: 0,
-      rotation: 5,
       duration: 1.2,
-      stagger: 0.15,
-      ease: 'power4.out',
+      stagger: 0.1,
+      ease: 'power3.out',
     })
-      .to('.hero-desc', { opacity: 1, y: 0, duration: 1 }, '-=0.5')
+      .to('.hero-desc', { opacity: 1, y: 0, duration: 1 }, '-=0.6')
       .to('.hero-cta', { opacity: 1, y: 0, duration: 1 }, '-=0.8');
-
-    // Floating card animation
-    this.gsap.to('.card-3d', {
-      y: -20,
-      duration: 4,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut',
-    });
   }
 
   setupScrollTriggers() {
@@ -140,7 +106,7 @@ export class GsapService {
       if (typeof target === 'string') {
         const element = document.querySelector(target);
         if (element) {
-          const y = element.getBoundingClientRect().top + window.pageYOffset - offset;
+          const y = element.getBoundingClientRect().top + window.scrollY - offset;
           window.scrollTo({ top: y, behavior: 'smooth' });
         }
       } else {
@@ -153,13 +119,13 @@ export class GsapService {
       const element = document.querySelector(target);
       if (element) {
         this.gsap.to(window, {
-          duration: 1.2,
+          duration: 0.8,
           scrollTo: { y: element, offsetY: offset },
-          ease: 'power4.inOut',
+          ease: 'power3.inOut',
         });
       }
     } else {
-      this.gsap.to(window, { duration: 1.2, scrollTo: target, ease: 'power4.inOut' });
+      this.gsap.to(window, { duration: 0.8, scrollTo: target, ease: 'power3.inOut' });
     }
   }
 }

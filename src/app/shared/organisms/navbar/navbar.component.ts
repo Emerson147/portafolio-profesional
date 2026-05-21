@@ -12,126 +12,77 @@ import { TranslateService } from '../../../core/services/translate.service';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [
-    CommonModule,
-    LogoComponent,
-    IconComponent,
-    NavLinkComponent,
-    RouterLink,
-    RouterLinkActive,
-  ],
+  imports: [CommonModule, IconComponent, RouterLink, RouterLinkActive],
   template: `
     <nav
       role="navigation"
       aria-label="Navegación principal"
-      [class]="
-        'fixed w-full z-50 transition-all duration-500 ' +
-        (isScrolled()
-          ? 'bg-white dark:bg-stone-950 border-b-2 border-stone-200 dark:border-stone-800 py-4 shadow-sm'
-          : 'bg-transparent py-8')
-      "
+      class="fixed bottom-4 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] max-w-[95vw] lg:max-w-max"
     >
-      <!-- Grid Pattern on Scroll (light) -->
       <div
-        class="absolute inset-0 opacity-[0.03] dark:opacity-0 pointer-events-none transition-opacity duration-500"
-        [class.!opacity-0]="!isScrolled()"
-        style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px;"
-      ></div>
-      <!-- Grid Pattern on Scroll (dark) -->
-      <div
-        class="absolute inset-0 opacity-0 dark:opacity-[0.06] pointer-events-none transition-opacity duration-500"
-        [class.!opacity-0]="!isScrolled()"
-        style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"
-      ></div>
-
-      <div class="max-w-7xl mx-auto px-6 flex justify-between items-center relative z-10">
-        <div
+        class="flex items-center gap-1 lg:gap-2 px-2 lg:px-3 py-2 lg:py-3 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur-xl border border-stone-200/50 dark:border-stone-800/50 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+      >
+        <!-- Home / Logo Button -->
+        <button
           (click)="scrollToTop($event)"
-          class="cursor-pointer active:scale-95 transition-transform duration-200"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 hover:bg-cyan-500 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-white transition-all duration-300 group"
+          aria-label="Volver arriba"
         >
-          <app-logo />
-        </div>
+          <app-icon name="home" class="w-5 h-5 group-hover:scale-110 transition-transform" />
+        </button>
 
-        <!-- Desktop Nav -->
-        <div class="hidden md:flex gap-6 lg:gap-8 items-center">
+        <!-- Divider -->
+        <div class="w-px h-6 bg-stone-300 dark:bg-stone-700 mx-1"></div>
+
+        <!-- Navigation Links (Icons always visible, text expands on hover in desktop) -->
+        <div class="flex items-center gap-1 overflow-x-auto hide-scrollbar max-w-full">
           @for (item of navigation; track item.name) {
             @if (item.type === 'route') {
               <a
                 [routerLink]="item.href"
-                routerLinkActive="text-emerald-600"
-                class="text-sm font-mono text-stone-600 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                routerLinkActive="bg-stone-200/80 dark:bg-stone-800/80 text-cyan-600 dark:text-cyan-400"
+                class="group flex items-center justify-center h-10 px-3 rounded-full text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300 shrink-0"
               >
-                {{ item.name }}
+                @if (item.icon) {
+                  <app-icon [name]="item.icon" class="w-5 h-5" />
+                }
+                <span class="dock-label">{{ item.name }}</span>
               </a>
             } @else {
-              <app-nav-link [href]="item.href" [label]="item.name" />
+              <button
+                (click)="scrollToSection($event, item.href)"
+                class="group flex items-center justify-center h-10 px-3 rounded-full text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300 shrink-0"
+              >
+                @if (item.icon) {
+                  <app-icon [name]="item.icon" class="w-5 h-5" />
+                }
+                <span class="dock-label">{{ item.name }}</span>
+              </button>
             }
           }
+        </div>
+
+        <!-- Divider -->
+        <div class="w-px h-6 bg-stone-300 dark:bg-stone-700 mx-1"></div>
+
+        <!-- Utilities -->
+        <div class="flex items-center gap-1">
           <!-- Language Toggle -->
           <button
             (click)="i18n.toggle()"
-            class="px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 bg-white/80 dark:bg-stone-900/80 text-stone-600 dark:text-stone-300 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-300 backdrop-blur-sm text-xs font-mono font-bold tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            class="w-10 h-10 flex items-center justify-center rounded-full text-xs font-mono font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300"
             [attr.aria-label]="i18n.lang() === 'es' ? 'Switch to English' : 'Cambiar a Español'"
           >
             {{ i18n.lang() === 'es' ? 'EN' : 'ES' }}
           </button>
-          <!-- Theme Toggle Button -->
+
+          <!-- Theme Toggle -->
           <button
             (click)="theme.toggle()"
-            class="relative w-10 h-10 flex items-center justify-center rounded-full border border-stone-200 dark:border-stone-700 bg-white/80 dark:bg-stone-900/80 text-stone-600 dark:text-stone-300 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all duration-300 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            class="w-10 h-10 flex items-center justify-center rounded-full text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300"
             [attr.aria-label]="theme.isDark() ? 'Activar modo día' : 'Activar modo noche'"
           >
             @if (theme.isDark()) {
-              <!-- Sun icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
-                />
-              </svg>
-            } @else {
-              <!-- Moon icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                />
-              </svg>
-            }
-          </button>
-        </div>
-
-        <!-- Mobile: Language + Theme + Hamburger -->
-        <div class="md:hidden flex items-center gap-3">
-          <!-- Language toggle -->
-          <button
-            (click)="i18n.toggle()"
-            class="px-2.5 py-1 rounded-full border border-stone-200 dark:border-stone-700 bg-white/80 dark:bg-stone-900/80 text-stone-600 dark:text-stone-300 hover:border-emerald-500 transition-all text-xs font-mono font-bold"
-          >
-            {{ i18n.lang() === 'es' ? 'EN' : 'ES' }}
-          </button>
-          <!-- Theme toggle -->
-          <button
-            (click)="theme.toggle()"
-            class="w-9 h-9 flex items-center justify-center rounded-full border border-stone-200 dark:border-stone-700 bg-white/80 dark:bg-stone-900/80 text-stone-600 dark:text-stone-300 hover:border-emerald-500 transition-all"
-          >
-            @if (theme.isDark()) {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-4 w-4"
@@ -162,60 +113,9 @@ import { TranslateService } from '../../../core/services/translate.service';
                 />
               </svg>
             }
-          </button>
-          <!-- Hamburger -->
-          <button
-            class="text-stone-900 dark:text-stone-100 active:scale-95 transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
-            (click)="toggleMenu()"
-            [attr.aria-expanded]="isMobileMenuOpen()"
-            aria-controls="mobile-menu"
-            aria-label="Abrir menú de navegación"
-          >
-            <app-icon name="menu" />
           </button>
         </div>
       </div>
-
-      <!-- Mobile Nav -->
-      @if (isMobileMenuOpen()) {
-        <div
-          id="mobile-menu"
-          role="menu"
-          class="md:hidden absolute top-full left-0 w-full bg-stone-50 dark:bg-stone-900 border-b-2 border-stone-200 dark:border-stone-700 p-6 flex flex-col gap-6 shadow-xl animate-slide-down overflow-hidden"
-        >
-          <!-- Grid Pattern for Mobile Menu -->
-          <div
-            class="absolute inset-0 opacity-[0.03] dark:opacity-0 pointer-events-none"
-            style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px;"
-          ></div>
-          <div
-            class="absolute inset-0 opacity-0 dark:opacity-[0.06] pointer-events-none"
-            style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"
-          ></div>
-
-          <div class="relative z-10 flex flex-col gap-6">
-            @for (item of navigation; track item.name) {
-              @if (item.type === 'route') {
-                <a
-                  [routerLink]="item.href"
-                  (click)="isMobileMenuOpen.set(false)"
-                  class="text-xl font-mono text-stone-800 dark:text-stone-200 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors active:scale-95 origin-left inline-block"
-                >
-                  // {{ item.name }}
-                </a>
-              } @else {
-                <a
-                  [href]="item.href"
-                  (click)="onMobileNavClick($event, item.href)"
-                  class="text-xl font-mono text-stone-800 dark:text-stone-200 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors active:scale-95 origin-left inline-block"
-                >
-                  // {{ item.name }}
-                </a>
-              }
-            }
-          </div>
-        </div>
-      }
     </nav>
   `,
   styles: [
@@ -223,6 +123,32 @@ import { TranslateService } from '../../../core/services/translate.service';
       :host {
         display: block;
       }
+      /* Hide scrollbar for mobile */
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Hover label animation for Dynamic Island */
+      .dock-label {
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        transition: max-width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, margin-left 0.3s ease;
+      }
+
+      @media (min-width: 768px) {
+        .group:hover .dock-label {
+          max-width: 120px;
+          opacity: 1;
+          margin-left: 8px;
+        }
+      }
+
       .animate-slide-down {
         animation: slideDown 0.3s ease-out;
       }
@@ -259,6 +185,11 @@ export class NavbarComponent {
 
   toggleMenu() {
     this.isMobileMenuOpen.update((v) => !v);
+  }
+
+  scrollToSection(event: Event, target: string) {
+    event.preventDefault();
+    this.gsap.scrollTo(target, 80);
   }
 
   scrollToTop(event: Event) {

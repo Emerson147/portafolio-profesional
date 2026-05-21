@@ -30,37 +30,7 @@ import { TranslateService } from '../../../core/services/translate.service';
             {{ i18n.t().footer.subtitle }}
           </p>
 
-          <!-- CTA buttons -->
-          <div class="flex flex-wrap justify-center gap-4 footer-reveal">
-            <a
-              href="mailto:emersontec147@gmail.com"
-              class="group inline-flex items-center gap-3 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-sm rounded-lg transition-all duration-300 shadow-lg shadow-emerald-500/20 active:scale-95"
-            >
-              <span class="w-4 h-4 shrink-0" [innerHTML]="getIcon('mail')"></span>
-              <span>ENVIAR EMAIL</span>
-            </a>
-
-            <a
-              href="assets/cv-migattedev.pdf"
-              download
-              class="group inline-flex items-center gap-3 px-8 py-3.5 border border-white/20 text-stone-300 font-mono text-sm rounded-lg hover:border-emerald-500 hover:text-emerald-400 transition-all duration-300 active:scale-95"
-            >
-              <svg
-                class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span>DESCARGAR CV</span>
-            </a>
-          </div>
+       
         </div>
 
         <!-- Bottom bar -->
@@ -82,7 +52,7 @@ import { TranslateService } from '../../../core/services/translate.service';
           <!-- Social links -->
           <div class="flex gap-3" role="list" aria-label="Redes sociales">
             <a
-              href="https://linkedin.com/in/emerson-quijada-rafael"
+              href="https://www.linkedin.com/in/migattedev"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"

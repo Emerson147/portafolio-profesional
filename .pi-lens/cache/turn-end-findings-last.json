@@ -1,0 +1,4 @@
+{
+  "signature": "src/app/core/data/icons.data.ts::ℹ️ Advisory — no action required this turn:\n⚠️ Newly unused exports in modified files — check if callers need updating (Knip):\n  src/app/core/data/icons.data.ts:58 — TechIconName\n",
+  "sessionId": "lens-mpendd8a-66ac8bcd"
+}

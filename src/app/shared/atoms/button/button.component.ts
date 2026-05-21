@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../icon/icon.component';
+import { ThemeService } from '../../../core/services/theme.service';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'contact';
 
@@ -9,9 +10,15 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'contact';
   standalone: true,
   imports: [CommonModule, IconComponent],
   template: `
-    <a [href]="href" [class]="buttonClasses" (click)="onClick($event)">
+    <a
+      [href]="href()"
+      [class]="buttonClasses()"
+      [target]="target()"
+      [attr.download]="download() || null"
+      (click)="onClick($event)"
+    >
       <ng-content></ng-content>
-      @if (showArrow) {
+      @if (showArrow()) {
         <span
           class="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
         >
@@ -29,23 +36,29 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'contact';
   ],
 })
 export class ButtonComponent {
-  @Input() variant: ButtonVariant = 'primary';
-  @Input() href = '#';
-  @Input() showArrow = false;
+  variant = input<ButtonVariant>('primary');
+  href = input<string>('#');
+  showArrow = input<boolean>(false);
+  target = input<string>('_self');
+  download = input<string>('');
 
-  get buttonClasses(): string {
+  private theme = inject(ThemeService);
+
+  buttonClasses = computed<string>(() => {
+    const isDark = this.theme.isDark();
+    const v = this.variant();
     const base =
       'group inline-flex items-center font-bold transition-all duration-300 cursor-pointer active:scale-95';
 
     const variants: Record<ButtonVariant, string> = {
-      primary: `${base} px-8 py-4 bg-stone-900 text-white rounded-tr-3xl rounded-bl-3xl hover:bg-emerald-800 shadow-xl shadow-stone-900/10`,
-      secondary: `${base} px-8 py-4 bg-transparent border border-stone-300 text-stone-600 rounded-tl-3xl rounded-br-3xl hover:border-emerald-600 hover:text-emerald-700`,
-      outline: `${base} px-6 py-2 border border-stone-900 text-stone-900 rounded-full text-sm hover:bg-stone-900 hover:text-white`,
-      contact: `${base} px-10 py-5 bg-white text-stone-900 text-xl rounded-full hover:bg-emerald-400 hover:scale-105`,
+      primary: `${base} px-8 py-4 ${isDark ? 'bg-stone-100 text-stone-900 hover:bg-white' : 'bg-stone-900 text-stone-50 hover:bg-stone-800'} rounded-full hover:shadow-xl hover:-translate-y-0.5`,
+      secondary: `${base} px-8 py-4 bg-transparent border ${isDark ? 'border-stone-700 text-stone-300 hover:border-stone-500 hover:text-stone-100' : 'border-stone-300 text-stone-700 hover:border-stone-400 hover:text-stone-900'} rounded-full hover:bg-stone-500/5 hover:-translate-y-0.5`,
+      outline: `${base} px-6 py-2 border ${isDark ? 'border-stone-700 text-stone-300 hover:border-stone-400 text-white' : 'border-stone-300 text-stone-600 hover:border-stone-500 hover:text-stone-900'} rounded-full text-sm hover:bg-stone-500/5`,
+      contact: `${base} px-10 py-5 ${isDark ? 'bg-cyan-500 text-stone-950 hover:bg-cyan-400' : 'bg-cyan-600 text-white hover:bg-cyan-500'} text-lg rounded-full hover:shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-0.5`,
     };
 
-    return variants[this.variant];
-  }
+    return variants[v];
+  });
 
   onClick(event: Event) {
     // Allow default behavior for navigation

@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "files": {
+    "src/app/shared/organisms/navbar/navbar.component.ts": {
+      "latest": {
+        "commit": "f3623e6",
+        "timestamp": "2026-05-20T22:58:00.564Z",
+        "mi": 29,
+        "cognitive": 2,
+        "nesting": 3,
+        "lines": 261,
+        "maxCyclomatic": 2,
+        "entropy": 6.27
+      },
+      "history": [
+        {
+          "commit": "f3623e6",
+          "timestamp": "2026-05-20T22:58:00.564Z",
+          "mi": 29,
+          "cognitive": 2,
+          "nesting": 3,
+          "lines": 261,
+          "maxCyclomatic": 2,
+          "entropy": 6.27
+        }
+      ],
+      "trend": "stable"
+    },
+    "src/app/shared/atoms/icon/icon.component.ts": {
+      "latest": {
+        "commit": "f3623e6",
+        "timestamp": "2026-05-20T23:01:08.392Z",
+        "mi": 49.6,
+        "cognitive": 3,
+        "nesting": 2,
+        "lines": 36,
+        "maxCyclomatic": 1,
+        "entropy": 5.11
+      },
+      "history": [
+        {
+          "commit": "f3623e6",
+          "timestamp": "2026-05-20T23:01:08.392Z",
+          "mi": 49.6,
+          "cognitive": 3,
+          "nesting": 2,
+          "lines": 36,
+          "maxCyclomatic": 1,
+          "entropy": 5.11
+        }
+      ],
+      "trend": "stable"
+    },
+    "src/app/core/data/icons.data.ts": {
+      "latest": {
+        "commit": "f3623e6",
+        "timestamp": "2026-05-20T23:01:20.831Z",
+        "mi": 56,
+        "cognitive": 0,
+        "nesting": 0,
+        "lines": 49,
+        "maxCyclomatic": 1,
+        "entropy": 4.7
+      },
+      "history": [
+        {
+          "commit": "f3623e6",
+          "timestamp": "2026-05-20T23:01:20.831Z",
+          "mi": 56,
+          "cognitive": 0,
+          "nesting": 0,
+          "lines": 49,
+          "maxCyclomatic": 1,
+          "entropy": 4.7
+        }
+      ],
+      "trend": "stable"
+    }
+  },
+  "capturedAt": "2026-05-20T23:01:25.832Z"
+}
