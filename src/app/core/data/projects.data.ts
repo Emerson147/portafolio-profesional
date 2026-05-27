@@ -35,11 +35,13 @@ export const PROJECTS: Project[] = [
     desc: 'Sistema de gestión empresarial para PYMEs de venta e importación. POS intuitivo, control de inventario, gestión de clientes, reportes exportables y métricas en tiempo real. Offline-first con IndexedDB y sincronización a Supabase/PostgreSQL.',
     tags: ['Angular', 'Supabase', 'PostgreSQL', 'IndexedDB'],
     github: 'https://github.com/Emerson147/importaciones-denraf',
+    demo: 'https://demo-denraf.vercel.app',
     role: 'Full Stack Developer',
     date: '2025',
     duration: '6 meses',
     status: 'Completado',
     metrics: { users: '50+', uptime: '99.8%', performance: '<150ms' },
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop',
     challenge:
       'El mayor reto fue diseñar una experiencia fluida que funcionara sin conexión, garantizando que ningún dato de venta se perdiera y que la sincronización con la nube al reconectar fuera transparente, confiable y sin conflictos.',
     solution:
