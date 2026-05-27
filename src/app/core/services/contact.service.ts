@@ -14,8 +14,7 @@ export interface ContactForm {
 })
 export class ContactService {
   private http = inject(HttpClient);
-  // TODO: Replace with your actual Formspree endpoint (e.g., https://formspree.io/f/xyza...)
-  private apiUrl = 'https://formspree.io/f/YOUR_FORM_ID_HERE';
+  private apiUrl = 'https://formspree.io/f/xzdwykgp';
 
   constructor() {}
 
