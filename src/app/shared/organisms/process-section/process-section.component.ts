@@ -8,13 +8,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 interface ProcessStep {
   num: string;
   title: string;
   description: string;
-  icon: SafeHtml; // inline SVG — pre-sanitized
 }
 
 @Component({
@@ -81,14 +79,10 @@ interface ProcessStep {
                   @if (i % 2 === 0) {
                     <div class="relative max-w-md w-full text-right p-6 rounded-2xl transition-all duration-500 hover:bg-stone-50 dark:hover:bg-white/[0.02]">
                       <!-- Content -->
-                      <div class="mb-4 flex items-center justify-end gap-3">
+                      <div class="mb-4">
                         <h3 class="text-xl font-bold text-stone-900 dark:text-stone-50 tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                           {{ step.title }}
                         </h3>
-                        <span
-                          class="w-5 h-5 text-stone-400 dark:text-stone-500 group-hover:text-emerald-500 transition-colors"
-                          [innerHTML]="step.icon"
-                        ></span>
                       </div>
                       <p
                         class="text-stone-500 dark:text-stone-400 leading-relaxed text-sm font-light group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors"
@@ -118,11 +112,7 @@ interface ProcessStep {
                   @if (i % 2 !== 0) {
                     <div class="relative max-w-md w-full p-6 rounded-2xl transition-all duration-500 hover:bg-stone-50 dark:hover:bg-white/[0.02]">
                       <!-- Content -->
-                      <div class="mb-4 flex items-center gap-3">
-                        <span
-                          class="w-5 h-5 text-stone-400 dark:text-stone-500 group-hover:text-emerald-500 transition-colors"
-                          [innerHTML]="step.icon"
-                        ></span>
+                      <div class="mb-4">
                         <h3 class="text-xl font-bold text-stone-900 dark:text-stone-50 tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                           {{ step.title }}
                         </h3>
@@ -152,11 +142,7 @@ interface ProcessStep {
                 </div>
                 <!-- Content -->
                 <div class="bg-stone-50/50 dark:bg-[#0a0a0a] border border-stone-200/50 dark:border-white/5 p-6 rounded-2xl transition-all duration-500 group-hover:border-emerald-500/30">
-                  <div class="flex items-center gap-3 mb-4">
-                    <span
-                      class="w-4 h-4 text-stone-400 dark:text-stone-500 group-hover:text-emerald-500 transition-colors"
-                      [innerHTML]="step.icon"
-                    ></span>
+                  <div class="mb-3">
                     <h3 class="text-lg font-bold text-stone-900 dark:text-stone-50 tracking-tight group-hover:text-emerald-400 transition-colors">
                       {{ step.title }}
                     </h3>
@@ -217,13 +203,8 @@ export class ProcessSectionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('timelineLine') timelineRef!: ElementRef<HTMLElement>;
 
   private platformId = inject(PLATFORM_ID);
-  private sanitizer   = inject(DomSanitizer);
   private observer: IntersectionObserver | null = null;
   private stepObserver: IntersectionObserver | null = null;
-
-  private svg(raw: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(raw);
-  }
 
   steps: ProcessStep[] = [
     {
@@ -231,28 +212,24 @@ export class ProcessSectionComponent implements AfterViewInit, OnDestroy {
       title: 'Inspiración y Necesidad',
       description:
         'Todo comienza con una chispa. Analizamos tu visión, el mercado y las necesidades reales del usuario. Entendemos lo que tu negocio necesita para prosperar.',
-      icon: this.svg(`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>`),
     },
     {
       num: '02',
       title: 'Arquitectura y Prototipado',
       description:
         'Definimos la base técnica antes de escribir una línea de código. Diseñamos modelos de datos relacionales, APIs robustas y wireframes de interfaces eficientes.',
-      icon: this.svg(`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/></svg>`),
     },
     {
       num: '03',
       title: 'Desarrollo Zen',
       description:
         'Código limpio, escalable y mantenible. Arquitectura sólida con Angular y Spring Boot, sin deuda técnica. Solo soluciones empresariales de alta disponibilidad.',
-      icon: this.svg(`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>`),
     },
     {
       num: '04',
       title: 'Despliegue y Escala',
       description:
         'El código en producción es solo el comienzo. Containerizamos con Docker, desplegamos en la nube y preparamos tu plataforma para crecer de forma sostenida.',
-      icon: this.svg(`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>`),
     },
   ];
 
