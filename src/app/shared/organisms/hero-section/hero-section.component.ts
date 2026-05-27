@@ -1,9 +1,10 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID, AfterViewInit, isDevMode } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ButtonComponent } from '../../atoms/button/button.component';
 import { CodeSnippetComponent } from '../../molecules/code-snippet/code-snippet.component';
 import { GsapService } from '../../../core/services/gsap.service';
 import { TranslateService } from '../../../core/services/translate.service';
+import gsap from 'gsap';
 
 @Component({
   selector: 'app-hero-section',
@@ -11,29 +12,15 @@ import { TranslateService } from '../../../core/services/translate.service';
   imports: [CommonModule, ButtonComponent, CodeSnippetComponent],
   template: `
     <section
-      class="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden bg-white dark:bg-[#050505] transition-colors duration-500"
+      class="relative min-h-[100svh] flex flex-col items-center justify-center px-6 overflow-hidden bg-transparent"
       (mousemove)="onMouseMove($event)"
     >
-      <!-- Spotlight Orbs (Ambient glow) -->
-      <div
-        class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-500/10 via-stone-50/0 to-stone-50/0 dark:from-cyan-500/20 dark:via-[#050505]/0 dark:to-[#050505]/0 -z-10 pointer-events-none parallax-layer"
-        data-speed="0.02"
-      ></div>
-      <div
-        class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/5 dark:bg-emerald-500/10 rounded-full blur-[120px] -z-10 pointer-events-none parallax-layer"
-        data-speed="-0.01"
-      ></div>
-
-      <!-- Background Grid (Very subtle) -->
-      <div
-        class="absolute inset-0 opacity-[0.02] dark:opacity-[0.03] pointer-events-none"
-        style="background-image: linear-gradient(rgba(0, 0, 0, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 1) 1px, transparent 1px); background-size: 64px 64px;"
-      ></div>
+      <!-- Global ambient and grid is now handled by MainLayoutComponent -->
 
       <div class="z-10 flex flex-col items-center text-center max-w-4xl pt-10">
         <!-- Status Pill -->
         <div
-          class="hero-reveal mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/60 backdrop-blur-md shadow-sm"
+          class="hero-pill opacity-0 mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/60 backdrop-blur-md shadow-sm"
         >
           <span class="relative flex h-2 w-2">
             <span
@@ -52,17 +39,17 @@ import { TranslateService } from '../../../core/services/translate.service';
           class="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tighter text-stone-900 dark:text-white leading-[1.05] mb-6"
         >
           <div class="overflow-hidden pb-2">
-            <span class="hero-reveal inline-block">{{ i18n.t().hero.line1 }}</span>
+            <span class="hero-line inline-block opacity-0">{{ i18n.t().hero.line1 }}</span>
           </div>
           <div class="overflow-hidden pb-2">
             <span
-              class="hero-reveal inline-block text-transparent bg-clip-text bg-linear-to-r from-stone-500 to-stone-900 dark:from-stone-300 dark:to-white"
+              class="hero-line inline-block opacity-0 text-transparent bg-clip-text bg-gradient-to-r from-stone-500 to-stone-900 dark:from-stone-300 dark:to-white"
             >
               {{ i18n.t().hero.line2 }}
             </span>
           </div>
           <div class="overflow-hidden pb-2">
-            <span class="hero-reveal inline-block">{{ i18n.t().hero.line3 }}</span>
+            <span class="hero-line inline-block opacity-0">{{ i18n.t().hero.line3 }}</span>
           </div>
         </h1>
 
@@ -93,7 +80,7 @@ import { TranslateService } from '../../../core/services/translate.service';
 
       <!-- Scroll Indicator -->
       <div
-        class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40 animate-bounce hidden sm:flex"
+        class="hero-scroll opacity-0 absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 hidden sm:flex"
       >
         <span class="text-[10px] tracking-widest uppercase font-mono text-stone-500">Scroll</span>
         <div class="w-px h-10 bg-stone-300 dark:bg-stone-700"></div>
@@ -108,10 +95,43 @@ import { TranslateService } from '../../../core/services/translate.service';
     `,
   ],
 })
-export class HeroSectionComponent {
+export class HeroSectionComponent implements AfterViewInit {
   private platformId = inject(PLATFORM_ID);
   private gsap = inject(GsapService);
   i18n = inject(TranslateService);
+
+  ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    // CRITICAL FIX: We must check isDevMode() exactly like the LoadingScreen does.
+    // Otherwise, in dev mode, the loader runs fully but the hero fast-forwards.
+    const hasVisited = !isDevMode() && sessionStorage.getItem('portfolio_visited') === '1';
+    
+    // The loading screen curtains start parting exactly at 2.6s. 
+    // We start the Hero reveal exactly at 2.6s so it emerges as the curtains open.
+    const startDelay = hasVisited ? 0.2 : 2.6;
+
+    // Pre-hide elements instantly to avoid flashing before the delay finishes
+    // Made the pill start higher (y: -40) so the drop is more noticeable
+    gsap.set('.hero-pill', { opacity: 0, y: -40 });
+    gsap.set('.hero-line', { opacity: 0, y: 100 });
+    gsap.set('.hero-desc', { opacity: 0, y: 20 });
+    gsap.set('.hero-cta', { opacity: 0, y: 20 });
+    gsap.set('.hero-scroll', { opacity: 0 });
+
+    const tl = gsap.timeline({ delay: startDelay, defaults: { ease: 'power3.out' } });
+
+    // 1. Pill drops in with a subtle bounce (back.out)
+    tl.to('.hero-pill', { opacity: 1, y: 0, duration: 1, ease: 'elastic.inOut(i,0.3)' })
+    // 2. Title lines stagger up
+      .to('.hero-line', { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'expo.out' }, '-=0.4')
+    // 3. Desc fades and floats up
+      .to('.hero-desc', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+    // 4. CTAs appear
+      .to('.hero-cta', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+    // 5. Scroll indicator fades in
+      .to('.hero-scroll', { opacity: 0.4, duration: 1 }, '-=0.2');
+  }
 
   onMouseMove(e: MouseEvent) {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -130,3 +150,4 @@ export class HeroSectionComponent {
     this.gsap.scrollTo(target, 80);
   }
 }
+

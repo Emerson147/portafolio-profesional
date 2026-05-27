@@ -25,81 +25,74 @@ import { ButtonComponent } from '../../atoms/button/button.component';
     <section
       id="about"
       #sectionEl
-      class="py-24 md:py-32 px-6 bg-white dark:bg-stone-950 relative overflow-hidden transition-colors duration-500"
+      class="py-24 md:py-32 px-6 bg-transparent relative overflow-hidden"
     >
-      <!-- Subtle Pattern -->
-      <div
-        class="absolute inset-0 opacity-[0.015] pointer-events-none"
-        style="background-image: radial-gradient(circle at 1px 1px, #000 1px, transparent 0); background-size: 40px 40px;"
-      ></div>
+      <!-- Global grid and lighting now handled by MainLayoutComponent -->
 
       <div class="max-w-6xl mx-auto relative z-10">
         <!-- Section Header -->
         <div class="mb-14 about-reveal">
           <span
-            class="text-cyan-600 dark:text-cyan-400 font-mono font-bold text-xs tracking-widest uppercase mb-3 block"
+            class="text-emerald-600 dark:text-emerald-500 font-mono font-bold text-[10px] tracking-widest uppercase mb-4 block"
           >
             // {{ i18n.t().about.label }}
           </span>
           <h2
-            class="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-50 flex items-center gap-4"
+            class="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-50 tracking-tighter flex items-center gap-4"
           >
             {{ i18n.t().about.title }}
-            <span class="hidden md:block flex-1 h-px bg-stone-200 dark:bg-stone-700"></span>
+            <span class="hidden md:block flex-1 h-px bg-stone-200 dark:bg-stone-800"></span>
           </h2>
         </div>
 
         <div class="grid lg:grid-cols-5 gap-10 lg:gap-14 items-start">
-          <!-- Photo (2 cols) -->
+          <!-- Photo (2 cols) - Minimalist Zen Frame -->
           <div class="lg:col-span-2 about-reveal">
             <div class="relative group max-w-xs mx-auto lg:mx-0">
               <div class="relative aspect-square">
-                <!-- Animated decorative frames -->
+                <!-- Precision borders (No rotations, pure architecture) -->
                 <div
-                  class="absolute -inset-3 bg-cyan-500/10 rounded-2xl transform rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-500"
-                ></div>
-                <div
-                  class="absolute -inset-3 border border-cyan-500/20 rounded-2xl transform -rotate-2 group-hover:rotate-0 group-hover:scale-105 transition-all duration-500"
+                  class="absolute -inset-2 border border-stone-200 dark:border-white/10 rounded-2xl group-hover:border-emerald-500/30 transition-colors duration-700 pointer-events-none"
                 ></div>
 
                 <!-- Photo -->
                 <div
-                  class="relative bg-stone-100 rounded-xl overflow-hidden aspect-square shadow-lg group-hover:shadow-2xl group-hover:shadow-cyan-500/20 transition-all duration-500"
+                  class="relative bg-stone-100 dark:bg-stone-900 rounded-xl overflow-hidden aspect-square border border-stone-200/50 dark:border-white/5 transition-all duration-700"
                 >
                   <img
                     src="images/profile.jpeg"
                     alt="Emerson Quijada Rafael"
-                    class="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                    class="w-full h-full object-cover object-center transform group-hover:scale-[1.03] transition-transform duration-1000 ease-out filter grayscale-[20%] group-hover:grayscale-0"
                   />
-                  <!-- Overlay on hover -->
+                  <!-- Subtle Inner Shadow/Gradient -->
                   <div
-                    class="absolute inset-0 bg-linear-to-t from-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-80"
                   ></div>
                 </div>
 
-                <!-- Available Badge -->
+                <!-- Status Badge -->
                 <div
-                  class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-stone-900 dark:bg-stone-800 text-white px-4 py-1.5 rounded-full shadow-lg flex items-center gap-2 group-hover:bg-cyan-600 transition-colors duration-300"
+                  class="absolute -bottom-3 right-4 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 px-4 py-1.5 rounded-full shadow-sm flex items-center gap-2 group-hover:border-emerald-500/50 transition-colors duration-500"
                 >
                   <span class="relative flex h-2 w-2">
                     <span
-                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"
+                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
                     ></span>
                     <span
-                      class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 group-hover:bg-white transition-colors"
+                      class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"
                     ></span>
                   </span>
-                  <span class="text-xs font-medium">Disponible</span>
+                  <span class="text-[10px] tracking-widest font-mono uppercase">Disponible</span>
                 </div>
               </div>
 
               <!-- Location -->
-              <div class="flex items-center gap-2 mt-8 text-stone-500 text-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="flex items-center gap-2 mt-8 text-stone-400 font-mono text-[10px] tracking-wider uppercase">
+                <svg class="w-3.5 h-3.5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="2"
+                    stroke-width="1.5"
                     d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                   />
                 </svg>
@@ -109,68 +102,70 @@ import { ButtonComponent } from '../../atoms/button/button.component';
           </div>
 
           <!-- Content (3 cols) -->
-          <div class="lg:col-span-3 space-y-5">
+          <div class="lg:col-span-3 space-y-6">
             <!-- Name & Title -->
             <div class="about-reveal">
-              <h3 class="text-xl md:text-2xl font-bold text-stone-900 dark:text-stone-100 mb-1">
+              <h3 class="text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-50 mb-2 tracking-tight">
                 {{ i18n.t().about.name }}
               </h3>
-              <p class="text-cyan-600 dark:text-cyan-400 font-mono text-sm">{{ i18n.t().about.subtitle }}</p>
+              <p class="text-emerald-600 dark:text-emerald-500 font-mono text-xs tracking-widest uppercase">
+                {{ i18n.t().about.subtitle }}
+              </p>
             </div>
 
             <!-- Bio -->
-            <div class="text-stone-600 dark:text-stone-400 leading-relaxed space-y-4 about-reveal">
+            <div class="text-stone-600 dark:text-stone-400 leading-relaxed space-y-4 about-reveal font-light">
               <p>
-                <strong class="text-stone-700 dark:text-stone-200"
+                <strong class="text-stone-900 dark:text-stone-200 font-medium"
                   >{{ i18n.t().about.bio1 }}</strong
                 >          
-                <span class="text-cyan-700 dark:text-cyan-400 font-medium"
+                <span class="text-emerald-700 dark:text-emerald-400 font-medium"
                   >{{ i18n.t().about.bio1_backend }}</span
                 >
                 {{ i18n.t().about.bio1_and }}
-                <span class="text-purple-700 dark:text-purple-400 font-medium"
+                <span class="text-stone-800 dark:text-stone-300 font-medium"
                   >{{ i18n.t().about.bio1_frontend }}</span
                 >.
               </p>
               <p>
                 {{ i18n.t().about.bio2 }}
-                <strong class="text-stone-800 dark:text-stone-200"
+                <strong class="text-stone-900 dark:text-stone-200 font-medium"
                   >{{ i18n.t().about.bio2_bold }}</strong
                 >
                   {{ i18n.t().about.bio2_mid }}
                 <span
-                  class="font-mono text-xs bg-stone-100 dark:bg-stone-800 dark:text-stone-300 px-2 py-0.5 rounded"
+                  class="font-mono text-[10px] uppercase tracking-wider border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 dark:text-stone-300 px-2 py-0.5 rounded"
                   >{{ i18n.t().about.bio2_devops }}</span
                 >  {{ i18n.t().about.bio2_end }}
               </p>
               <p
-                class="text-stone-500 dark:text-stone-400 text-sm border-l-2 border-cyan-500 pl-4 italic"
+                class="text-stone-500 dark:text-stone-500 text-sm border-l border-emerald-500/50 pl-4 italic"
               >
                 {{ i18n.t().about.quote }}
               </p>
             </div>
 
-            <!-- Tech Cards with icons -->
-            <div class="grid grid-cols-2 gap-4 pt-2 about-reveal">
+            <!-- Tech Cards with icons (Monochrome Zen Style) -->
+            <div class="grid grid-cols-2 gap-4 pt-4 about-reveal">
               <!-- Backend -->
               <div
-                class="group/card bg-stone-50 dark:bg-stone-900 p-4 rounded-lg border border-stone-100 dark:border-stone-800 hover:border-orange-400/50 hover:bg-orange-50/30 dark:hover:bg-orange-950/20 hover:shadow-lg hover:shadow-orange-500/8 transition-all duration-300 cursor-default active:scale-[0.98]"
+                class="group/card bg-stone-50 dark:bg-[#0a0a0a] p-5 rounded-xl border border-stone-200/60 dark:border-white/5 hover:border-emerald-500/30 transition-colors duration-500 cursor-default"
               >
                 <div
-                  class="text-orange-600 dark:text-orange-400 font-bold text-sm mb-3 flex items-center gap-2"
+                  class="text-stone-900 dark:text-stone-100 font-mono text-xs tracking-widest uppercase mb-4 flex items-center gap-2"
                 >
                   <span
-                    class="w-2 h-2 bg-orange-500 rounded-full group-hover/card:animate-pulse"
+                    class="w-1.5 h-1.5 bg-emerald-500 rounded-full group-hover/card:animate-pulse"
                   ></span>
                   Backend
                 </div>
                 <div
-                  class="text-stone-600 dark:text-stone-400 text-xs space-y-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
+                  class="text-stone-500 dark:text-stone-400 text-xs space-y-2.5 font-light"
                 >
                   @for (item of backendItemsSafe(); track item.label) {
-                    <div class="flex items-center gap-1.5">
+                    <div class="flex items-center gap-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-300 transition-colors">
                       <span
-                        class="w-3 h-3 shrink-0 text-orange-500/70"
+                        class="w-3.5 h-3.5 shrink-0 opacity-70"
                         [innerHTML]="item.safeIcon"
                       ></span>
                       <span>{{ item.label }}</span>
@@ -181,23 +176,23 @@ import { ButtonComponent } from '../../atoms/button/button.component';
 
               <!-- Frontend -->
               <div
-                class="group/card bg-stone-50 dark:bg-stone-900 p-4 rounded-lg border border-stone-100 dark:border-stone-800 hover:border-red-400/50 hover:bg-red-50/30 dark:hover:bg-red-950/20 hover:shadow-lg hover:shadow-red-500/8 transition-all duration-300 cursor-default active:scale-[0.98]"
+                class="group/card bg-stone-50 dark:bg-[#0a0a0a] p-5 rounded-xl border border-stone-200/60 dark:border-white/5 hover:border-emerald-500/30 transition-colors duration-500 cursor-default"
               >
                 <div
-                  class="text-red-600 dark:text-red-400 font-bold text-sm mb-3 flex items-center gap-2"
+                  class="text-stone-900 dark:text-stone-100 font-mono text-xs tracking-widest uppercase mb-4 flex items-center gap-2"
                 >
                   <span
-                    class="w-2 h-2 bg-red-500 rounded-full group-hover/card:animate-pulse"
+                    class="w-1.5 h-1.5 bg-stone-400 dark:bg-stone-600 rounded-full group-hover/card:bg-emerald-500 transition-colors"
                   ></span>
                   Frontend
                 </div>
                 <div
-                  class="text-stone-600 dark:text-stone-400 text-xs space-y-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-200 transition-colors"
+                  class="text-stone-500 dark:text-stone-400 text-xs space-y-2.5 font-light"
                 >
                   @for (item of frontendItemsSafe(); track item.label) {
-                    <div class="flex items-center gap-1.5">
+                    <div class="flex items-center gap-2 group-hover/card:text-stone-800 dark:group-hover/card:text-stone-300 transition-colors">
                       <span
-                        class="w-3 h-3 shrink-0 text-red-500/70"
+                        class="w-3.5 h-3.5 shrink-0 opacity-70"
                         [innerHTML]="item.safeIcon"
                       ></span>
                       <span>{{ item.label }}</span>
@@ -208,25 +203,12 @@ import { ButtonComponent } from '../../atoms/button/button.component';
             </div>
 
             <!-- CTAs -->
-            <div class="flex flex-wrap gap-3 pt-3 about-reveal">
+            <div class="flex flex-wrap gap-3 pt-6 about-reveal">
               <app-button
                 variant="primary"
                 href="#contact"
                 (click)="scrollToContact($event)"
               >
-                <svg
-                  class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform inline-block"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
                 {{ i18n.t().about.cta_contact }}
               </app-button>
               <app-button
@@ -234,14 +216,6 @@ import { ButtonComponent } from '../../atoms/button/button.component';
                 href="https://minimalist-portfolio-eta.vercel.app/"
                 target="_blank"
               >
-                <svg class="w-4 h-4 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
                 {{ i18n.t().about.cta_cv_online }}
               </app-button>
               <app-button
@@ -249,19 +223,6 @@ import { ButtonComponent } from '../../atoms/button/button.component';
                 href="cv/CV_Emerson_Quijada_Rafael.pdf"
                 download="CV_Emerson_Quijada_Rafael.pdf"
               >
-                <svg
-                  class="w-4 h-4 mr-2 group-hover:translate-y-0.5 transition-transform inline-block"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
                 {{ i18n.t().about.cta_cv_download }}
               </app-button>
             </div>
@@ -270,12 +231,12 @@ import { ButtonComponent } from '../../atoms/button/button.component';
 
         <!-- Stats — animated on intersection -->
         <div
-          class="grid grid-cols-3 gap-8 mt-14 pt-10 border-t border-stone-100 dark:border-stone-800"
+          class="grid grid-cols-3 gap-8 mt-20 pt-10 border-t border-stone-200 dark:border-white/5"
         >
           @for (stat of animatedStats(); track stat.label) {
             <div class="text-center about-reveal group cursor-default">
               <div
-                class="text-2xl md:text-3xl font-bold text-stone-800 dark:text-stone-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors"
+                class="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors tracking-tighter"
               >
                 @if (stat.isNumber) {
                   <span class="tabular-nums">{{ stat.currentValue }}</span
@@ -285,7 +246,7 @@ import { ButtonComponent } from '../../atoms/button/button.component';
                 }
               </div>
               <div
-                class="text-xs text-stone-400 dark:text-stone-500 uppercase tracking-wider mt-1 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-colors"
+                class="text-[10px] text-stone-400 dark:text-stone-500 uppercase tracking-widest mt-2 font-mono group-hover:text-stone-600 dark:group-hover:text-stone-400 transition-colors"
               >
                 {{ stat.label }}
               </div>
@@ -303,10 +264,10 @@ import { ButtonComponent } from '../../atoms/button/button.component';
 
       .about-reveal {
         opacity: 0;
-        transform: translateY(18px);
+        transform: translateY(20px);
         transition:
-          opacity 0.55s ease,
-          transform 0.55s ease;
+          opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
       }
       .about-reveal.visible {
         opacity: 1;
@@ -325,30 +286,30 @@ export class AboutSectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private observer: IntersectionObserver | null = null;
 
-  // Tech card items with icons
+  // Tech card items with minimal SVGs from icons.data.ts
   backendItems = [
     { label: 'Java · Spring Boot', icon: 'Java' as keyof typeof TECH_ICONS },
-    { label: 'SQL Server · PostgreSQL', icon: 'PostgreSQL' as keyof typeof TECH_ICONS },
+    { label: 'PostgreSQL · SQL Server', icon: 'PostgreSQL' as keyof typeof TECH_ICONS },
     { label: 'Docker · AWS', icon: 'Docker' as keyof typeof TECH_ICONS },
   ];
 
   frontendItems = [
-    { label: 'Angular · Astro', icon: 'Angular' as keyof typeof TECH_ICONS },
-    { label: 'Tailwind · PrimeNG', icon: 'Tailwind' as keyof typeof TECH_ICONS },
-    { label: 'HTML5 · CSS3 · JS', icon: 'Angular' as keyof typeof TECH_ICONS },
+    { label: 'Angular · TypeScript', icon: 'Angular' as keyof typeof TECH_ICONS },
+    { label: 'Tailwind CSS', icon: 'Tailwind' as keyof typeof TECH_ICONS },
+    { label: 'HTML5 · JS', icon: 'Terminal' as keyof typeof TECH_ICONS }, // Using Terminal icon as a clean fallback if HTML/JS don't exist
   ];
 
   backendItemsSafe = computed(() => {
     return this.backendItems.map((item) => ({
       label: item.label,
-      safeIcon: this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[item.icon] || ''),
+      safeIcon: this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[item.icon] || TECH_ICONS['Java']),
     }));
   });
 
   frontendItemsSafe = computed(() => {
     return this.frontendItems.map((item) => ({
       label: item.label,
-      safeIcon: this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[item.icon] || ''),
+      safeIcon: this.sanitizer.bypassSecurityTrustHtml(TECH_ICONS[item.icon] || TECH_ICONS['Angular']),
     }));
   });
 

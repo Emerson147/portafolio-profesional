@@ -27,18 +27,9 @@ import { IconComponent } from '../../atoms/icon/icon.component';
   template: `
     <section
       id="projects"
-      class="py-24 md:py-32 px-6 bg-stone-100 dark:bg-stone-900 relative overflow-hidden transition-colors duration-500"
+      class="py-24 md:py-32 px-6 bg-transparent relative overflow-hidden"
     >
-      <!-- Dot grid light -->
-      <div
-        class="absolute inset-0 opacity-[0.04] dark:opacity-0 pointer-events-none"
-        style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px;"
-      ></div>
-      <!-- Dot grid dark -->
-      <div
-        class="absolute inset-0 opacity-0 dark:opacity-[0.06] pointer-events-none"
-        style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"
-      ></div>
+      <!-- Global grid and lighting now handled by MainLayoutComponent -->
 
       <div class="max-w-7xl mx-auto relative z-10">
         <!-- Header — consistent with other sections -->
