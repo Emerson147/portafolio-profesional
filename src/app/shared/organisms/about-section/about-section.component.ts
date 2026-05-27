@@ -60,7 +60,7 @@ import { ButtonComponent } from '../../atoms/button/button.component';
                   class="relative bg-stone-100 dark:bg-stone-900 rounded-xl overflow-hidden aspect-square border border-stone-200/50 dark:border-white/5 transition-all duration-700"
                 >
                   <img
-                    src="images/profile.jpeg"
+                    src="images/emerson_1.png"
                     alt="Emerson Quijada Rafael"
                     class="w-full h-full object-cover object-center transform group-hover:scale-[1.03] transition-transform duration-1000 ease-out filter grayscale-[20%] group-hover:grayscale-0"
                   />
