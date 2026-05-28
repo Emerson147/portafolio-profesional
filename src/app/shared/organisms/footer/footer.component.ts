@@ -10,53 +10,43 @@ import { TranslateService } from '../../../core/services/translate.service';
   imports: [CommonModule],
   template: `
     <footer
-      id="contact"
-      class="bg-stone-900 dark:bg-stone-950 text-white pb-20 pt-16 px-6 relative overflow-hidden transition-colors duration-500"
+      id="site-footer"
+      class="bg-transparent pb-12 pt-24 px-6 relative overflow-hidden transition-colors duration-500"
     >
-      <!-- Dot grid -->
-      <div
-        class="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"
-      ></div>
-
       <div class="max-w-5xl mx-auto relative z-10">
-        <!-- Headline + CTA section -->
-        <div class="text-center mb-16 footer-reveal">
-          <h2 class="text-4xl md:text-6xl font-bold mb-6 tracking-tighter">
+        <!-- Headline -->
+        <div class="text-center mb-24 footer-reveal">
+          <h2 class="text-3xl md:text-5xl font-bold mb-4 tracking-tighter text-stone-900 dark:text-stone-50">
             {{ i18n.t().footer.headline1 }}<br />
-            <span class="text-emerald-400">{{ i18n.t().footer.headline2 }}</span>
+            <span class="text-emerald-600 dark:text-emerald-500">{{ i18n.t().footer.headline2 }}</span>
           </h2>
-          <p class="text-stone-400 text-lg max-w-2xl mx-auto leading-relaxed mb-10">
+          <p class="text-stone-500 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-light">
             {{ i18n.t().footer.subtitle }}
           </p>
-
-       
         </div>
 
         <!-- Bottom bar -->
         <div
-          class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs font-mono text-stone-500 gap-4 footer-reveal"
+          class="pt-8 border-t border-stone-200 dark:border-stone-800/50 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono tracking-widest text-stone-400 dark:text-stone-500 uppercase gap-6 footer-reveal"
         >
-          <div class="flex flex-col md:flex-row gap-3 items-center">
+          <div class="flex flex-col md:flex-row gap-2 items-center text-center md:text-left">
             <p>
-              <span class="text-stone-600">©</span> 2026 MigatteDev
-              <span class="text-stone-600 mx-1">•</span>
-              <span class="text-stone-600">v1.0.0</span>
+              <span class="text-emerald-600 dark:text-emerald-500">©</span> 2026 MigatteDev
+              <span class="hidden md:inline mx-2 opacity-30">•</span>
             </p>
-            <span class="hidden md:inline text-stone-700">|</span>
-            <p class="text-stone-600">
-              Built with Angular 17 <span class="mx-1">•</span> Deployed on Vercel
+            <p>
+              Built with Angular 18 <span class="mx-2 opacity-30">•</span> Deployed on Vercel
             </p>
           </div>
 
           <!-- Social links -->
-          <div class="flex gap-3" role="list" aria-label="Redes sociales">
+          <div class="flex gap-4" role="list" aria-label="Redes sociales">
             <a
               href="https://www.linkedin.com/in/migattedev"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              class="w-9 h-9 border border-white/15 rounded-full flex items-center justify-center text-stone-400 hover:border-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-200"
+              class="w-8 h-8 rounded-full flex items-center justify-center text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-300"
               [innerHTML]="getIcon('linkedin')"
             ></a>
             <a
@@ -64,7 +54,7 @@ import { TranslateService } from '../../../core/services/translate.service';
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
-              class="w-9 h-9 border border-white/15 rounded-full flex items-center justify-center text-stone-400 hover:border-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-200"
+              class="w-8 h-8 rounded-full flex items-center justify-center text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-300"
               [innerHTML]="getIcon('github')"
             ></a>
           </div>
@@ -121,7 +111,7 @@ export class FooterComponent implements AfterViewInit, OnDestroy {
     );
 
     requestAnimationFrame(() => {
-      document.querySelectorAll('#contact .footer-reveal').forEach((el, i) => {
+      document.querySelectorAll('#site-footer .footer-reveal').forEach((el, i) => {
         (el as HTMLElement).style.transitionDelay = `${i * 130}ms`;
         this.observer?.observe(el);
       });
