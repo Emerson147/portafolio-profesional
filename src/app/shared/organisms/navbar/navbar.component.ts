@@ -20,19 +20,19 @@ import { TranslateService } from '../../../core/services/translate.service';
       class="fixed bottom-4 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] max-w-[95vw] lg:max-w-max"
     >
       <div
-        class="flex items-center gap-1 lg:gap-2 px-2 lg:px-3 py-2 lg:py-3 rounded-full bg-white/70 dark:bg-stone-900/70 backdrop-blur-xl border border-stone-200/50 dark:border-stone-800/50 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+        class="flex items-center gap-1 lg:gap-2 px-2 lg:px-3 py-2 lg:py-3 rounded-full bg-white/50 dark:bg-[#0a0a0a]/50 backdrop-blur-xl border border-stone-200/50 dark:border-white/5 shadow-2xl shadow-stone-200/20 dark:shadow-black/50"
       >
         <!-- Home / Logo Button -->
         <button
           (click)="scrollToTop($event)"
-          class="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 hover:bg-cyan-500 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-white transition-all duration-300 group"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 dark:bg-[#111] border border-transparent dark:border-stone-800 text-stone-900 dark:text-stone-100 hover:border-emerald-500/30 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white transition-all duration-300 group"
           aria-label="Volver arriba"
         >
           <app-icon name="home" class="w-5 h-5 group-hover:scale-110 transition-transform" />
         </button>
 
         <!-- Divider -->
-        <div class="w-px h-6 bg-stone-300 dark:bg-stone-700 mx-1"></div>
+        <div class="w-px h-6 bg-stone-300 dark:bg-stone-800 mx-1"></div>
 
         <!-- Navigation Links (Icons always visible, text expands on hover in desktop) -->
         <div class="flex items-center gap-1 overflow-x-auto hide-scrollbar max-w-full">
@@ -40,8 +40,8 @@ import { TranslateService } from '../../../core/services/translate.service';
             @if (item.type === 'route') {
               <a
                 [routerLink]="item.href"
-                routerLinkActive="bg-stone-200/80 dark:bg-stone-800/80 text-cyan-600 dark:text-cyan-400"
-                class="group flex items-center justify-center h-10 px-3 rounded-full text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300 shrink-0"
+                routerLinkActive="bg-stone-200/80 dark:bg-[#111] text-emerald-600 dark:text-emerald-500"
+                class="group flex items-center justify-center h-10 px-3 rounded-full text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-[#111] hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300 shrink-0"
               >
                 @if (item.icon) {
                   <app-icon [name]="item.icon" class="w-5 h-5" />
@@ -51,7 +51,7 @@ import { TranslateService } from '../../../core/services/translate.service';
             } @else {
               <button
                 (click)="scrollToSection($event, item.href)"
-                class="group flex items-center justify-center h-10 px-3 rounded-full text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300 shrink-0"
+                class="group flex items-center justify-center h-10 px-3 rounded-full text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-[#111] hover:text-stone-900 dark:hover:text-stone-100 transition-all duration-300 shrink-0"
               >
                 @if (item.icon) {
                   <app-icon [name]="item.icon" class="w-5 h-5" />
@@ -63,14 +63,14 @@ import { TranslateService } from '../../../core/services/translate.service';
         </div>
 
         <!-- Divider -->
-        <div class="w-px h-6 bg-stone-300 dark:bg-stone-700 mx-1"></div>
+        <div class="w-px h-6 bg-stone-300 dark:bg-stone-800 mx-1"></div>
 
         <!-- Utilities -->
         <div class="flex items-center gap-1">
           <!-- Language Toggle -->
           <button
             (click)="i18n.toggle()"
-            class="w-10 h-10 flex items-center justify-center rounded-full text-xs font-mono font-bold text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300"
+            class="w-10 h-10 flex items-center justify-center rounded-full text-[10px] font-mono font-bold tracking-widest text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-[#111] hover:text-emerald-600 dark:hover:text-emerald-500 transition-all duration-300"
             [attr.aria-label]="i18n.lang() === 'es' ? 'Switch to English' : 'Cambiar a Español'"
           >
             {{ i18n.lang() === 'es' ? 'EN' : 'ES' }}
@@ -79,7 +79,7 @@ import { TranslateService } from '../../../core/services/translate.service';
           <!-- Theme Toggle -->
           <button
             (click)="theme.toggle()"
-            class="w-10 h-10 flex items-center justify-center rounded-full text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300"
+            class="w-10 h-10 flex items-center justify-center rounded-full text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-[#111] hover:text-emerald-600 dark:hover:text-emerald-500 transition-all duration-300"
             [attr.aria-label]="theme.isDark() ? 'Activar modo día' : 'Activar modo noche'"
           >
             @if (theme.isDark()) {
@@ -189,7 +189,7 @@ export class NavbarComponent {
 
   scrollToSection(event: Event, target: string) {
     event.preventDefault();
-    this.gsap.scrollTo(target, 80);
+    this.gsap.scrollTo(target, 0);
   }
 
   scrollToTop(event: Event) {
@@ -199,7 +199,7 @@ export class NavbarComponent {
 
   onMobileNavClick(event: Event, href: string) {
     event.preventDefault();
-    this.gsap.scrollTo(href, 80);
+    this.gsap.scrollTo(href, 0);
     this.isMobileMenuOpen.set(false);
   }
 }

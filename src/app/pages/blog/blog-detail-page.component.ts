@@ -156,7 +156,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
                   @for (related of relatedPosts(); track related.slug) {
                     <a
                       [routerLink]="['/blog', related.slug]"
-                      class="group p-5 bg-stone-50 dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-xl hover:border-emerald-500/50 transition-all"
+                      class="group p-5 bg-white/40 dark:bg-[#0a0a0a]/40 backdrop-blur-md border border-stone-200/50 dark:border-white/5 rounded-xl hover:border-emerald-500/30 hover:bg-white/60 dark:hover:bg-[#111]/60 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-500"
                     >
                       <div class="text-2xl mb-2">{{ related.coverEmoji }}</div>
                       <h4

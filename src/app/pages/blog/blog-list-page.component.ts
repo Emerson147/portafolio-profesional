@@ -107,7 +107,7 @@ import { BlogPost } from '../../core/data/blog.data';
               placeholder="Buscar artículos..."
               [value]="searchQuery()"
               (input)="onSearch($event)"
-              class="w-full max-w-md pl-11 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:border-emerald-500 transition-colors text-sm"
+              class="w-full max-w-md pl-11 pr-4 py-3 bg-white/40 dark:bg-[#0a0a0a]/40 backdrop-blur-md border border-stone-200/50 dark:border-white/5 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:border-emerald-500/50 focus:bg-white/60 dark:focus:bg-[#111]/60 transition-all text-sm"
             />
           </div>
 
@@ -116,10 +116,10 @@ import { BlogPost } from '../../core/data/blog.data';
             <button
               (click)="setActiveTag(null)"
               [class]="
-                'px-4 py-1.5 rounded-full text-xs font-mono transition-all ' +
+                'px-4 py-1.5 rounded-full text-xs font-mono transition-all backdrop-blur-sm ' +
                 (activeTag() === null
                   ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
-                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:border-emerald-500 border border-transparent')
+                  : 'bg-white/50 dark:bg-[#111]/50 border border-stone-200/50 dark:border-white/5 text-stone-600 dark:text-stone-400 hover:border-emerald-500/30')
               "
             >
               Todos ({{ allPosts().length }})
@@ -128,10 +128,10 @@ import { BlogPost } from '../../core/data/blog.data';
               <button
                 (click)="setActiveTag(tag)"
                 [class]="
-                  'px-4 py-1.5 rounded-full text-xs font-mono transition-all border ' +
+                  'px-4 py-1.5 rounded-full text-xs font-mono transition-all border backdrop-blur-sm ' +
                   (activeTag() === tag
                     ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'bg-transparent border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400')
+                    : 'bg-white/30 dark:bg-transparent border-stone-200/50 dark:border-white/5 text-stone-600 dark:text-stone-400 hover:border-emerald-500/30 hover:bg-white/50 dark:hover:bg-[#111]/50 hover:text-emerald-600 dark:hover:text-emerald-400')
                 "
               >
                 {{ tag }}
@@ -142,7 +142,7 @@ import { BlogPost } from '../../core/data/blog.data';
       </div>
 
       <!-- Posts Grid -->
-      <main class="px-6 py-16">
+      <main class="px-6 py-16 relative z-10">
         <div class="max-w-5xl mx-auto">
           @if (filteredPosts().length === 0) {
             <div class="text-center py-24">
@@ -155,7 +155,7 @@ import { BlogPost } from '../../core/data/blog.data';
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               @for (post of filteredPosts(); track post.slug) {
                 <article
-                  class="group relative bg-white dark:bg-stone-900 border border-stone-100 dark:border-stone-800 rounded-2xl p-6 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 cursor-pointer"
+                  class="group relative bg-white/40 dark:bg-[#0a0a0a]/40 backdrop-blur-md border border-stone-200/50 dark:border-white/5 rounded-2xl p-6 hover:border-emerald-500/30 hover:bg-white/60 dark:hover:bg-[#111]/60 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-500 cursor-pointer"
                 >
                   <!-- Status badge -->
                   <div class="flex items-center justify-between mb-4">
